@@ -37,38 +37,6 @@ void Physics_ProjectApp::update(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
-	static const glm::vec4 colors[] = {
-		glm::vec4(1, 0, 0, 1), glm::vec4(0, 1, 0, 1), 
-		glm::vec4(0, 0, 1, 1), glm::vec4(0.8f, 0, 0.5f, 1),
-		glm::vec4(0, 1, 1, 1)
-	};
-
-	static const int rows = 5;
-	static const int columns = 10;
-	static const int hSpace = 1; // horitzontal space
-	static const int vSpace = 1; // vertical space
-
-	static const glm::vec2 scrExtents(100, 50);
-	static const glm::vec2 boxExtents(7, 3);
-	static const glm::vec2 startPos(-(columns >> 1) * ((boxExtents.x * 2) + vSpace) + boxExtents.x + 
-		(vSpace / 2.0f), scrExtents.y - ((boxExtents.y * 2) + hSpace));
-
-	// Draw Blocks
-	glm::vec2 pos;
-	for (int y = 0; y < rows; y++) {
-		pos = glm::vec2(startPos.x, startPos.y - (y * ((boxExtents.y * 2) + hSpace)));
-
-		for (int x = 0; x < columns; x++) {
-			aie::Gizmos::add2DAABBFilled(pos, boxExtents, colors[y]);
-			pos.x += (boxExtents.x * 2) + vSpace;
-		}
-	}
-
-	aie::Gizmos::add2DCircle(glm::vec2(0, -35), 3, 12, glm::vec4(1, 1, 0, 1));
-	aie::Gizmos::add2DAABBFilled(glm::vec2(0, -40), glm::vec2(12, 2), glm::vec4(1, 0, 1, 1));
-
-
-
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_E))
 		quit();
