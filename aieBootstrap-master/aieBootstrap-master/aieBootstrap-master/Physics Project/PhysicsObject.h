@@ -21,7 +21,7 @@ public:
 protected:
 	ShapeType m_shapeID;
 
-	bool borderRestricted = false;
+	bool borderRestricted = true;
 
 	PhysicsObject(ShapeType a_shapeID) : m_shapeID(a_shapeID) {}
 

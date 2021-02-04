@@ -22,10 +22,20 @@ bool Sphere::CheckCollision(PhysicsObject* pOther)
 	Sphere* pSphere = dynamic_cast<Sphere*>(pOther);
 
 	if (pSphere != nullptr) {
-		glm::vec2 pos = GetPosition();
-		float dist = glm::distance(pos, pSphere->GetPosition());
+		float dist = glm::distance(GetPosition(), pSphere->GetPosition());
 		if (GetRadius() + pSphere->GetRadius() > dist)
 			return true;
+	}
+	return false;
+}
+
+bool Sphere::CheckBorderCollision()
+{
+	glm::vec2 pos = GetPosition();
+	if (borderRestricted) {
+		if (pos.x > 75 || pos.x < -75 || pos.y > 75 || pos.y < -75) {
+			return true;
+		}
 	}
 	return false;
 }

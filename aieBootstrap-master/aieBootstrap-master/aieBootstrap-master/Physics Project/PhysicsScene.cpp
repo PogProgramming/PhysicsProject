@@ -29,11 +29,14 @@ void PhysicsScene::RemoveActor(PhysicsObject* a_actor)
 	}
 }
 
+
+float borderCheckTimer = 0;
 void PhysicsScene::Update(float dt)
 {
 	static std::list<PhysicsObject*> dirty; // MUST REMOVE
 	static float accumulatedTime = 0.0f;
 	accumulatedTime += dt;
+	borderCheckTimer += dt;
 
 	while (accumulatedTime >= m_timeStep) {
 		for (auto pActor : m_actors) {
@@ -58,6 +61,21 @@ void PhysicsScene::Update(float dt)
 					dirty.push_back(pRigid);
 					dirty.push_back(pOther);
 				}
+
+				if (borderCheckTimer > 0.1f) { // THEY BOUNCE
+					if (pRigid->CheckBorderCollision() == true) {
+						pRigid->SetVelocity(-pRigid->GetVelocity());
+					}
+
+					pRigid = dynamic_cast<Rigidbody*>(pOther);
+					if (pRigid->CheckBorderCollision() == true) {
+						pRigid->SetVelocity(-pRigid->GetVelocity());
+					}
+					pRigid = dynamic_cast<Rigidbody*>(pActor);
+
+					borderCheckTimer = 0;
+				}
+
 
 			}
 		}

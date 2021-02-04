@@ -15,9 +15,12 @@ public:
 	void ApplyForceToOther(Rigidbody* a_otherActor, glm::vec2 a_force);
 
 	virtual bool CheckCollision(PhysicsObject* pOther) = 0;
+	virtual bool CheckBorderCollision() = 0;
 
 	glm::vec2 GetPosition() { return m_position; }
 	glm::vec2 GetVelocity() { return m_velocity; }
+
+	void SetVelocity(glm::vec2 a_velocity) { m_velocity = a_velocity; }
 	float GetMass() { return m_mass; }
 	float GetRotation() { return m_rotation; }
 

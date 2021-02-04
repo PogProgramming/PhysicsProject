@@ -9,6 +9,7 @@ public:
 
 	virtual void MakeGizmo();
 	bool CheckCollision(PhysicsObject* pOther);
+	bool CheckBorderCollision();
 
 	float GetRadius() { return m_radius; }
 	glm::vec4 GetColor() { return m_color; }
