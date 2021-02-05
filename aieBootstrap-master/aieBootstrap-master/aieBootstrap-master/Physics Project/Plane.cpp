@@ -1,6 +1,13 @@
 #include "Plane.h"
 #include <Gizmos.h>
 
+Plane::Plane() : PhysicsObject(ShapeType::PLANE)
+{
+	m_distanceToOrigin = 0;
+	m_normal = glm::vec2(0, 1);
+	m_color = glm::vec4(0, 1, 0, 1);
+}
+
 Plane::Plane(glm::vec2 a_normal, float a_distance) : PhysicsObject(PLANE)
 {
 	m_normal = a_normal;

@@ -6,6 +6,7 @@
 class Plane : public PhysicsObject
 {
 public:
+	Plane();
 	Plane(glm::vec2 a_normal, float a_distance);
 	~Plane();
 

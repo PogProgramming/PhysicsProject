@@ -43,38 +43,17 @@ void PhysicsScene::RemoveActor(PhysicsObject* a_actor)
 	}
 }
 
-float spawnTimer = 0.0f;
 void PhysicsScene::Update(float dt)
 {
 	static float accumulatedTime = 0.0f;
 	accumulatedTime += dt;
-	spawnTimer += dt;
 
 	while (accumulatedTime >= m_timeStep) {
 		for (auto pActor : m_actors) {
 			pActor->FixedUpdate(m_gravity, m_timeStep);
 		}
 
-		for (auto part : m_particles) {
-			part->FixedUpdate(m_gravity, m_timeStep);
-		}
-
 		accumulatedTime -= m_timeStep;
-
-		if (spawnTimer > 0.1f) {
-			Rigidbody* pRigidActor = dynamic_cast<Rigidbody*>(m_actors[0]);
-
-			Sphere* particle;
-			particle = new Sphere(dynamic_cast<Rigidbody*>(pRigidActor)->GetPosition(), glm::vec2(0, -30), 1.0f, 1, glm::vec4(0, 1, 0, 1));
-			m_particles.push_back(particle);
-
-			particle->ApplyForceToOther(pRigidActor, pRigidActor->GetVelocity() * pRigidActor->GetMass());
-
-
-
-
-			spawnTimer = 0;
-		}
 
 		CheckForCollision();
 	}
