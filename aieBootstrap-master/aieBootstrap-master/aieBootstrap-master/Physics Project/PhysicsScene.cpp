@@ -130,7 +130,19 @@ bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlan
 	return false;
 }
 
-bool PhysicsScene::Sphere2Sphere(PhysicsObject*, PhysicsObject*)
+bool PhysicsScene::Sphere2Sphere(PhysicsObject* objSphere, PhysicsObject* otherObjSphere)
 {
+	Sphere* sphere1 = dynamic_cast<Sphere*>(objSphere);
+	Sphere* sphere2 = dynamic_cast<Sphere*>(otherObjSphere);
+
+	if (sphere1 != nullptr && sphere2 != nullptr) {
+		float dist = glm::distance(sphere1->GetPosition(), sphere2->GetPosition());
+
+		float penetration = sphere1->GetRadius() + sphere2->GetRadius() - dist;
+		if (penetration > 0) {
+			sphere1->ResolveCollision(sphere2);
+			return true;
+		}
+	}
 	return false;
 }

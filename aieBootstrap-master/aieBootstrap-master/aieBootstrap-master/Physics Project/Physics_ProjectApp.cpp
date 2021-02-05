@@ -27,7 +27,7 @@ bool Physics_ProjectApp::startup() {
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->SetGravity(glm::vec2(0, -10));
+	m_physicsScene->SetGravity(glm::vec2(0, 0));
 
 	// Lower the value, the more accuratethe simulation ill be;
 	// but it will increase the processing time required. If it
@@ -35,9 +35,14 @@ bool Physics_ProjectApp::startup() {
 	m_physicsScene->SetTimeStep(0.01f);
 
 	Sphere* ball;
-	ball = new Sphere(glm::vec2(0, 20), glm::vec2(0, 0), 30.0f, 7, glm::vec4(1, 0, 0, 1));
-	ball->ApplyForce({ 0, -50 });
+	ball = new Sphere(glm::vec2(-50, 20), glm::vec2(0, 0), 10.0f, 7, glm::vec4(1, 0, 0, 1));
+	ball->ApplyForce({ 250, 0 });
 	m_physicsScene->AddActor(ball);
+
+	Sphere* ball2;
+	ball2 = new Sphere(glm::vec2(50, 20), glm::vec2(0, 0), 10.0f, 7, glm::vec4(1, 0, 0, 1));
+	ball2->ApplyForce({ -250, 0 });
+	m_physicsScene->AddActor(ball2);
 
 	Plane* plane = new Plane();
 	m_physicsScene->AddActor(plane);
