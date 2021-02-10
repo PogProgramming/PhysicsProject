@@ -7,6 +7,7 @@
 
 #include "Sphere.h"
 #include "Plane.h"
+#include "Box.h"
 
 Physics_ProjectApp::Physics_ProjectApp() {
 
@@ -34,18 +35,8 @@ bool Physics_ProjectApp::startup() {
 	// is too high it can cause the simulation to stutter and reduce stability.
 	m_physicsScene->SetTimeStep(0.01f);
 
-	Sphere* ball;
-	ball = new Sphere(glm::vec2(-50, 20), glm::vec2(0, 0), 10.0f, 7, glm::vec4(1, 0, 0, 1));
-	ball->ApplyForce({ 250, 0 });
-	m_physicsScene->AddActor(ball);
-
-	Sphere* ball2;
-	ball2 = new Sphere(glm::vec2(50, 20), glm::vec2(0, 0), 10.0f, 7, glm::vec4(1, 0, 0, 1));
-	ball2->ApplyForce({ -250, 0 });
-	m_physicsScene->AddActor(ball2);
-
-	Plane* plane = new Plane();
-	m_physicsScene->AddActor(plane);
+	SphereAndPlane();
+	DrawRect();
 
 	return true;
 }
@@ -69,6 +60,13 @@ void Physics_ProjectApp::update(float deltaTime) {
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_E))
 		quit();
+
+	if (input->isKeyDown(aie::INPUT_KEY_SPACE)) {
+		Sphere* ball0;
+		ball0 = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 7, glm::vec4(0, 0, 0, 1));
+		ball0->ApplyForce({ 100, 0 }, glm::vec2(0));
+		m_physicsScene->AddActor(ball0);
+	}
 }
 
 void Physics_ProjectApp::draw() {
@@ -89,6 +87,69 @@ void Physics_ProjectApp::draw() {
 
 	// done drawing sprites
 	m_2dRenderer->end();
+}
+
+void Physics_ProjectApp::DrawRect()
+{
+	m_physicsScene->AddActor(new Sphere(glm::vec2(20, 10), glm::vec2(-10, -17), 1, 3, glm::vec4(1, 0, 0, 1)));
+	m_physicsScene->AddActor(new Plane(glm::vec2(-0.65, 0.75), -25));
+
+	Box* box1 = new Box(glm::vec2(-50, 40), glm::vec2(16, -4), 1, 3, 8, 4, glm::vec4(1, 0, 0, 1));
+	box1->SetRotation(0.5);
+
+	m_physicsScene->AddActor(box1);
+}
+
+void Physics_ProjectApp::SphereAndPlane()
+{
+	//ball = new Sphere(glm::vec2(-30, 20), glm::vec2(0, 0), 0.1f, 7, glm::vec4(1, 0, 0, 1));
+	//ball2 = new Sphere(glm::vec2(40, 25), glm::vec2(0, 0), 0.1f, 7, glm::vec4(1, 0, 0, 1));
+	//
+	//ball->ApplyForce({ -20, -120 }, glm::vec2(0));
+	//ball2->ApplyForce({ -240, 0 }, glm::vec2(0));
+
+	Sphere* ball;
+	Sphere* ball2;
+	Sphere* ball3;
+	Sphere* ball4;
+	Sphere* ball5;
+	Sphere* ball6;
+	Sphere* ball7;
+
+
+	ball = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 1, 1, 1));
+	ball2 = new Sphere(glm::vec2(32, 29), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 1, 0, 0));
+	ball3 = new Sphere(glm::vec2(-33, 28), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 1, 1, 0));
+	ball4 = new Sphere(glm::vec2(34, 27), glm::vec2(0, 0), 1.0f, 7, glm::vec4(0, 0, 0, 1));
+	ball5 = new Sphere(glm::vec2(-35, 26), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 0, 0, 1));
+	ball6 = new Sphere(glm::vec2(36, 25), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 0, 1, 1));
+	ball7 = new Sphere(glm::vec2(36, 25), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 0, 0, 0));
+
+	ball->ApplyForce({ 10, 0 }, glm::vec2(0));
+	ball2->ApplyForce({ -10, 0 }, glm::vec2(0));
+	ball3->ApplyForce({ 10, 0 }, glm::vec2(0));
+	ball4->ApplyForce({ -10, 0 }, glm::vec2(0));
+	ball5->ApplyForce({ 10, 0 }, glm::vec2(0));
+	ball6->ApplyForce({ -10, 0 }, glm::vec2(0));
+	ball7->ApplyForce({ -10, 0 }, glm::vec2(0));
+
+	m_physicsScene->AddActor(ball);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(ball3);
+	m_physicsScene->AddActor(ball4);
+	m_physicsScene->AddActor(ball5);
+	m_physicsScene->AddActor(ball6);
+	m_physicsScene->AddActor(ball7);
+
+	Plane* plane = new Plane();
+	m_physicsScene->AddActor(plane);
+
+	for (int i = 0; i < 50; i++) {
+		Sphere* ball0;
+		ball0 = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 1, 1, 1));
+		ball0->ApplyForce({ 10, 0 }, glm::vec2(0));
+		m_physicsScene->AddActor(ball0);
+	}
 }
 
 // missed a public inheritance thingy

@@ -3,6 +3,7 @@
 
 // This is a one-sided object that extends infinitely along both its edge and backwards from its normal direction.
 
+class Rigidbody;
 class Plane : public PhysicsObject
 {
 public:
@@ -15,6 +16,8 @@ public:
 	virtual void Debug() {};
 	virtual void ResetPosition() {};
 	virtual void MakeGizmo();
+
+	void ResolveCollision(Rigidbody* a_otherActor, glm::vec2 a_contact);
 
 	glm::vec2 GetNormal() { return m_normal; }
 	//void SetNormal(glm::vec2 a_normal) { m_normal = a_normal; }

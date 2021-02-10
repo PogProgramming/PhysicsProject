@@ -4,11 +4,13 @@
 Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height) : Rigidbody(BOX, a_position, a_velocity, a_rotation, a_mass), m_extents(a_width, a_height)
 {
 	m_color = glm::vec4(1, 0, 0, 1);
+	m_moment = 1.0f / 3.0f * m_mass * a_width * a_height;
 }
 
 Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height, glm::vec4 a_color) : Rigidbody(BOX, a_position, a_velocity, a_rotation, a_mass), m_extents(a_width, a_height)
 {
 	m_color = a_color;
+	m_moment = 1.0f / 3.0f * m_mass * a_width * a_height;
 }
 
 Box::~Box()
@@ -22,6 +24,7 @@ void Box::FixedUpdate(glm::vec2 a_gravity, float a_timeStep)
 	float cs = cosf(m_rotation);
 	float sn = sinf(m_rotation);
 	m_localX = glm::normalize(glm::vec2(cs, sn));
+	m_localY = glm::normalize(glm::vec2(-sn, cs));
 }
 
 void Box::MakeGizmo()

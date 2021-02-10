@@ -17,10 +17,14 @@ public:
 	virtual void update(float deltaTime);
 	virtual void draw();
 
-protected:
 
+protected:
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
 
 	PhysicsScene* m_physicsScene;
+
+public:
+	void DrawRect();
+	void SphereAndPlane();
 };
