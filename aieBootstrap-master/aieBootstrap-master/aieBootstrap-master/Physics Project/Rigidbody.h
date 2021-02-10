@@ -18,7 +18,7 @@ public:
 
 	virtual bool CheckCollision(PhysicsObject* pOther) = 0;
 
-	glm::vec2 GetPosition() { return m_position; }
+	glm::vec2 GetPosition() const { return m_position; }
 	glm::vec2 GetVelocity() { return m_velocity; }
 
 	void SetVelocity(glm::vec2 a_velocity) { m_velocity = a_velocity; }
@@ -31,5 +31,7 @@ protected:
 
 	float m_mass;
 	float m_rotation;
+	float m_angular;
+	float m_moment;
 };
 
