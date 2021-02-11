@@ -13,19 +13,24 @@ public:
 
 	void ApplyForce(glm::vec2 a_force, glm::vec2 a_pos);
 
-	void ResolveCollision(Rigidbody* a_otherActor, glm::vec2 a_contact, glm::vec2* a_collisionNormal = nullptr);
+	void ResolveCollision(Rigidbody* a_otherActor, glm::vec2 a_contact, glm::vec2* a_collisionNormal = nullptr, float a_pen = 0);
 
 	glm::vec2 GetPosition() const { return m_position; }
+	glm::vec2 SetPosition(glm::vec2 a_position) { return m_position = a_position; }
+
 	glm::vec2 GetVelocity() { return m_velocity; }
-
 	void SetVelocity(glm::vec2 a_velocity) { m_velocity = a_velocity; }
-	float GetMass() { return m_mass; }
+	
 	float GetRotation() { return m_rotation; }
-
-	float GetMoment() { return m_moment; }
-	float GetAngularVelocity() { return m_angularVelocity; }
-
 	float SetRotation(float a_rotate) { return m_rotation = a_rotate; }
+
+ 	float GetMass() { return m_isKinematic ? INT_MAX : m_mass; }
+	float GetMoment() { return m_isKinematic ? INT_MAX : m_moment; }
+	float GetAngularVelocity() { return m_angularVelocity; }
+	float GetLinearDraw() { return m_linearDrag; }
+	float GetAngularDrag() { return m_angularDrag; }
+
+	glm::vec2 ToWorld(glm::vec2 a_localPos);
 
 protected:
 	glm::vec2 m_position;
@@ -35,5 +40,11 @@ protected:
 	float m_rotation;
 	float m_angularVelocity;
 	float m_moment;
+
+	float m_linearDrag;
+	float m_angularDrag;
+
+	glm::vec2 m_localX;
+	glm::vec2 m_localY;
 };
 

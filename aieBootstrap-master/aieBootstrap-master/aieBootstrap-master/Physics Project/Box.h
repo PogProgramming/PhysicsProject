@@ -1,7 +1,7 @@
 #pragma once
 #include "Rigidbody.h"
-class Box :
-	public Rigidbody
+
+class Box : public Rigidbody
 {
 public:
 	Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height);
@@ -27,7 +27,6 @@ protected:
 	glm::vec4 m_color;
 
 	// These will store the local x and y axes of the box based on its angle of rotation
-	glm::vec2 m_localX;
-	glm::vec2 m_localY;
+
 };
 

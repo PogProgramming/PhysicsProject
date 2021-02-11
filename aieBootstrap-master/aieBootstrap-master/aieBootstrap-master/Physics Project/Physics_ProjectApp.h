@@ -25,6 +25,7 @@ protected:
 	PhysicsScene* m_physicsScene;
 
 public:
+	void SpringTest(int a_amount);
 	void DrawRect();
 	void SphereAndPlane();
 };

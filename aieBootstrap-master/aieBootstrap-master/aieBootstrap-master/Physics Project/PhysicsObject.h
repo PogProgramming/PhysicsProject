@@ -4,6 +4,7 @@
 // This is a pure abstract class. It will be used as a base for the derived classes.
 
 enum ShapeType {
+	JOINT = -1,
 	PLANE = 0, 
 	SPHERE,
 	BOX,

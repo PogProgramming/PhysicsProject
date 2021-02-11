@@ -8,6 +8,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Box.h"
+#include "Spring.h"
 
 Physics_ProjectApp::Physics_ProjectApp() {
 
@@ -28,15 +29,16 @@ bool Physics_ProjectApp::startup() {
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->SetGravity(glm::vec2(0, 0));
+	m_physicsScene->SetGravity(glm::vec2(0, -9.8));
 
 	// Lower the value, the more accuratethe simulation ill be;
 	// but it will increase the processing time required. If it
 	// is too high it can cause the simulation to stutter and reduce stability.
 	m_physicsScene->SetTimeStep(0.01f);
-
-	SphereAndPlane();
-	DrawRect();
+	
+	//SphereAndPlane();
+	//DrawRect();
+	SpringTest(10);
 
 	return true;
 }
@@ -61,10 +63,10 @@ void Physics_ProjectApp::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_E))
 		quit();
 
-	if (input->isKeyDown(aie::INPUT_KEY_SPACE)) {
+	if (input->wasKeyPressed(aie::INPUT_KEY_SPACE)) {
 		Sphere* ball0;
-		ball0 = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 7, glm::vec4(0, 0, 0, 1));
-		ball0->ApplyForce({ 100, 0 }, glm::vec2(0));
+		ball0 = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 40.0f, 7, glm::vec4(0, 1, 0, 1));
+		ball0->ApplyForce({ 1000, 0 }, glm::vec2(0));
 		m_physicsScene->AddActor(ball0);
 	}
 }
@@ -87,6 +89,28 @@ void Physics_ProjectApp::draw() {
 
 	// done drawing sprites
 	m_2dRenderer->end();
+}
+
+void Physics_ProjectApp::SpringTest(int a_amount)
+{
+	Sphere* prev = nullptr;
+	for (int i = 0; i < a_amount; i++) {
+		// This will need to spawn the sphere at the bottom of the previous one, to make a pendulum that is effected by gravity
+		Sphere* sphere = new Sphere(glm::vec2((i * 3), 30 - i * 5), glm::vec2(0), 10.0f, 2, glm::vec4(1, 1, 0, 1));
+		if (i == 0) {
+			sphere->SetKinematic(true);
+		}
+		m_physicsScene->AddActor(sphere);
+
+		if (prev) {
+			m_physicsScene->AddActor(new Spring(sphere, prev, 10, 500));
+		}
+		prev = sphere;
+	}
+	
+	Box* box = new Box(glm::vec2(0, -20), glm::vec2(0), 0.3f, 20, 8, 2);
+	box->SetKinematic(true);
+	m_physicsScene->AddActor(box);
 }
 
 void Physics_ProjectApp::DrawRect()
@@ -114,16 +138,16 @@ void Physics_ProjectApp::SphereAndPlane()
 	Sphere* ball4;
 	Sphere* ball5;
 	Sphere* ball6;
-	Sphere* ball7;
+	//Sphere* ball7;
 
 
-	ball = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 1, 1, 1));
-	ball2 = new Sphere(glm::vec2(32, 29), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 1, 0, 0));
-	ball3 = new Sphere(glm::vec2(-33, 28), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 1, 1, 0));
-	ball4 = new Sphere(glm::vec2(34, 27), glm::vec2(0, 0), 1.0f, 7, glm::vec4(0, 0, 0, 1));
-	ball5 = new Sphere(glm::vec2(-35, 26), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 0, 0, 1));
-	ball6 = new Sphere(glm::vec2(36, 25), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 0, 1, 1));
-	ball7 = new Sphere(glm::vec2(36, 25), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 0, 0, 0));
+	ball = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 3, glm::vec4(1, 1, 1, 1));
+	ball2 = new Sphere(glm::vec2(32, 29), glm::vec2(0, 0), 1.0f, 3, glm::vec4(1, 1, 0, 1));
+	ball3 = new Sphere(glm::vec2(-33, 28), glm::vec2(0, 0), 1.0f, 3, glm::vec4(1, 1, 1, 1));
+	ball4 = new Sphere(glm::vec2(34, 27), glm::vec2(0, 0), 1.0f, 3, glm::vec4(0, 0, 0, 1));
+	ball5 = new Sphere(glm::vec2(-35, 26), glm::vec2(0, 0), 1.0f, 3, glm::vec4(1, 0, 0, 1));
+	ball6 = new Sphere(glm::vec2(36, 25), glm::vec2(0, 0), 1.0f, 3, glm::vec4(1, 0, 1, 1));
+	//ball7 = new Sphere(glm::vec2(36, 25), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 0, 0, 0));
 
 	ball->ApplyForce({ 10, 0 }, glm::vec2(0));
 	ball2->ApplyForce({ -10, 0 }, glm::vec2(0));
@@ -131,7 +155,7 @@ void Physics_ProjectApp::SphereAndPlane()
 	ball4->ApplyForce({ -10, 0 }, glm::vec2(0));
 	ball5->ApplyForce({ 10, 0 }, glm::vec2(0));
 	ball6->ApplyForce({ -10, 0 }, glm::vec2(0));
-	ball7->ApplyForce({ -10, 0 }, glm::vec2(0));
+	//ball7->ApplyForce({ -10, 0 }, glm::vec2(0));
 
 	m_physicsScene->AddActor(ball);
 	m_physicsScene->AddActor(ball2);
@@ -139,17 +163,17 @@ void Physics_ProjectApp::SphereAndPlane()
 	m_physicsScene->AddActor(ball4);
 	m_physicsScene->AddActor(ball5);
 	m_physicsScene->AddActor(ball6);
-	m_physicsScene->AddActor(ball7);
+	//m_physicsScene->AddActor(ball7);
 
 	Plane* plane = new Plane();
 	m_physicsScene->AddActor(plane);
 
-	for (int i = 0; i < 50; i++) {
-		Sphere* ball0;
-		ball0 = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 1, 1, 1));
-		ball0->ApplyForce({ 10, 0 }, glm::vec2(0));
-		m_physicsScene->AddActor(ball0);
-	}
+	//for (int i = 0; i < 50; i++) {
+	//	Sphere* ball0;
+	//	ball0 = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 7, glm::vec4(1, 1, 1, 1));
+	//	ball0->ApplyForce({ 10, 0 }, glm::vec2(0));
+	//	m_physicsScene->AddActor(ball0);
+	//}
 }
 
 // missed a public inheritance thingy
