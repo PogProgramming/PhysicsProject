@@ -12,12 +12,12 @@ public:
 	virtual void MakeGizmo();
 
 	bool CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numContacts, float& a_pen, glm::vec2& a_edgeNormal);
+	virtual bool IsInside(glm::vec2 a_point) { return false; }
 
 	float GetWidth() { return m_extents.x * 2; }
 	float GetHeight() { return m_extents.y * 2; }
 
 	glm::vec2 GetExtents() const { return m_extents; }
-
 	glm::vec2 GetLocalX() { return m_localX; }
 	glm::vec2 GetLocalY() { return m_localY; }
 	

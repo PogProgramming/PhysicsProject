@@ -38,7 +38,8 @@ bool Physics_ProjectApp::startup() {
 	
 	//SphereAndPlane();
 	//DrawRect();
-	SpringTest(10);
+	//SpringTest(10);
+	TriggerTest();
 
 	return true;
 }
@@ -49,8 +50,9 @@ void Physics_ProjectApp::shutdown() {
 	delete m_2dRenderer;
 }
 
+float timer = 0.0f;
+float waitTill = 0.5f;
 void Physics_ProjectApp::update(float deltaTime) {
-
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
@@ -63,11 +65,24 @@ void Physics_ProjectApp::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_E))
 		quit();
 
-	if (input->wasKeyPressed(aie::INPUT_KEY_SPACE)) {
+	if (input->isKeyDown(aie::INPUT_KEY_SPACE)) timer += deltaTime;
+	else waitTill = 0.5f;
+	if (timer > waitTill) {
 		Sphere* ball0;
-		ball0 = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 40.0f, 7, glm::vec4(0, 1, 0, 1));
-		ball0->ApplyForce({ 1000, 0 }, glm::vec2(0));
+		ball0 = new Sphere(glm::vec2(-31, 0), glm::vec2(0, 0), 5.0f, 7, glm::vec4(0, 1, 0, 1));
+		ball0->ApplyForce({ deltaTime * 100000, 0 }, glm::vec2(0));
 		m_physicsScene->AddActor(ball0);
+		waitTill -= deltaTime * 2;
+
+		if (waitTill < 0) waitTill = 0.0001f;
+		timer = 0;
+	}
+
+	if (input->isMouseButtonDown(0)) {
+		int xScreen, yScreen;
+		input->getMouseXY(&xScreen, &yScreen);
+		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+		aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.3f));
 	}
 }
 
@@ -79,11 +94,13 @@ void Physics_ProjectApp::draw() {
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
-	static float aspectRatio = 16.0f / 9.0f;
-	aie::Gizmos::draw2D(glm::ortho<float>(-100, 100, -100 / aspectRatio, 100 / aspectRatio, -1.0f, 1.0f));
+	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.0f, 1.0f));
 
 	// draw your stuff here!
-	
+	char fps[32];
+	sprintf_s(fps, 32, "FPS: %i", getFPS());
+	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
+
 	// output some text, uses the last used colour
 	m_2dRenderer->drawText(m_font, "Press E to quit", 0, 0);
 
@@ -91,19 +108,34 @@ void Physics_ProjectApp::draw() {
 	m_2dRenderer->end();
 }
 
+glm::vec2 Physics_ProjectApp::ScreenToWorld(glm::vec2 a_screenPos)
+{
+	glm::vec2 worldPos = a_screenPos;
+
+	// We will move the centre of the screen to (0, 0)
+	worldPos.x -= getWindowWidth() / 2;
+	worldPos.y -= getWindowHeight() / 2;
+
+	// Scale this according to the extents
+	worldPos.x *= 2.0f * m_extents / getWindowWidth();
+	worldPos.y *= 2.0f * m_extents / (m_aspectRatio * getWindowHeight());
+
+	return worldPos;
+}
+
 void Physics_ProjectApp::SpringTest(int a_amount)
 {
 	Sphere* prev = nullptr;
 	for (int i = 0; i < a_amount; i++) {
 		// This will need to spawn the sphere at the bottom of the previous one, to make a pendulum that is effected by gravity
-		Sphere* sphere = new Sphere(glm::vec2((i * 3), 30 - i * 5), glm::vec2(0), 10.0f, 2, glm::vec4(1, 1, 0, 1));
+		Sphere* sphere = new Sphere(glm::vec2((i * 3), 100 - i * 5), glm::vec2(0), 10.0f, 2, glm::vec4(1, 1, 0, 1));
 		if (i == 0) {
 			sphere->SetKinematic(true);
 		}
 		m_physicsScene->AddActor(sphere);
 
 		if (prev) {
-			m_physicsScene->AddActor(new Spring(sphere, prev, 10, 500));
+			m_physicsScene->AddActor(new Spring(sphere, prev, 40, 500));
 		}
 		prev = sphere;
 	}
@@ -122,6 +154,7 @@ void Physics_ProjectApp::DrawRect()
 	box1->SetRotation(0.5);
 
 	m_physicsScene->AddActor(box1);
+
 }
 
 void Physics_ProjectApp::SphereAndPlane()
@@ -174,6 +207,27 @@ void Physics_ProjectApp::SphereAndPlane()
 	//	ball0->ApplyForce({ 10, 0 }, glm::vec2(0));
 	//	m_physicsScene->AddActor(ball0);
 	//}
+}
+
+void Physics_ProjectApp::TriggerTest()
+{
+	Sphere* ball1 = new Sphere(glm::vec2(-20, 0), glm::vec2(0), 4, 4, glm::vec4(1, 0, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(10, -20), glm::vec2(0), 4, 4, glm::vec4(0, 0.5f, 0.5f, 1));
+	ball2->SetKinematic(true);
+	ball2->SetTrigger(true);
+
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(new Plane(glm::vec2(0, 1), -30));
+	m_physicsScene->AddActor(new Plane(glm::vec2(1, 0), -50));
+	m_physicsScene->AddActor(new Plane(glm::vec2(-1, 0), -50));
+	m_physicsScene->AddActor(new Box(glm::vec2(20, 10), glm::vec2(10, 0), 0.5f, 4, 8, 4));
+	m_physicsScene->AddActor(new Box(glm::vec2(-40, 10), glm::vec2(10, 0), 0.5f, 4, 8, 4));
+	m_physicsScene->AddActor(new Box(glm::vec2(-40, 40), glm::vec2(10, 0), 0.5f, 4, 8, 4));
+
+	ball2->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; };
+	ball2->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
+
 }
 
 // missed a public inheritance thingy

@@ -32,7 +32,6 @@ public:
 	void CheckForCollision();
 	static void ApplyContactForces(Rigidbody* a_actor1, Rigidbody* a_actor2, glm::vec2 a_collisionNorm, float a_pen);
 
-
 	static bool Plane2Plane (PhysicsObject*, PhysicsObject*);
 	static bool Plane2Sphere (PhysicsObject*, PhysicsObject*);
 	static bool Plane2Box(PhysicsObject*, PhysicsObject*);

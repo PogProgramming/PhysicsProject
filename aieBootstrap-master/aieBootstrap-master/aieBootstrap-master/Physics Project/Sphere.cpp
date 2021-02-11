@@ -21,14 +21,7 @@ void Sphere::MakeGizmo()
 	//std::cout << std::endl << "y: " << m_position.y << std::endl;
 }
 
-bool Sphere::CheckCollision(PhysicsObject* pOther)
+bool Sphere::IsInside(glm::vec2 a_point)
 {
-	Sphere* pSphere = dynamic_cast<Sphere*>(pOther);
-
-	if (pSphere != nullptr) {
-		float dist = glm::distance(GetPosition(), pSphere->GetPosition());
-		if (GetRadius() + pSphere->GetRadius() > dist)
-			return true;
-	}
-	return false;
+	return glm::distance(a_point, GetPosition()) <= GetRadius();
 }

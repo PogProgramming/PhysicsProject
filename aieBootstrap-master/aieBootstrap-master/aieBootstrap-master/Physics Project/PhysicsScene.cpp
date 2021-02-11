@@ -11,9 +11,17 @@
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] = {
-	PhysicsScene::Plane2Plane, PhysicsScene::Plane2Sphere, PhysicsScene::Plane2Box,
-	PhysicsScene::Sphere2Plane, PhysicsScene::Sphere2Sphere, PhysicsScene::Sphere2Box,
-	PhysicsScene::Box2Plane, PhysicsScene::Box2Sphere, PhysicsScene::Box2Box
+	PhysicsScene::Plane2Plane, 
+	PhysicsScene::Plane2Sphere, 
+	PhysicsScene::Plane2Box,
+
+	PhysicsScene::Sphere2Plane, 
+	PhysicsScene::Sphere2Sphere, 
+	PhysicsScene::Sphere2Box,
+
+	PhysicsScene::Box2Plane, 
+	PhysicsScene::Box2Sphere, 
+	PhysicsScene::Box2Box
 };
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -113,10 +121,14 @@ void PhysicsScene::CheckForCollision()
 
 void PhysicsScene::ApplyContactForces(Rigidbody* a_actor1, Rigidbody* a_actor2, glm::vec2 a_collisionNorm, float a_pen)
 {
+	if ((a_actor1 && a_actor1->IsTrigger()) || (a_actor2 && a_actor2->IsTrigger()))
+		return;
+
 	float body2Mass = a_actor2 ? a_actor2->GetMass() : INT_MAX;
 	float body1Factor = body2Mass / (a_actor1->GetMass() + body2Mass);
 
 	a_actor1->SetPosition(a_actor1->GetPosition() - body1Factor * a_collisionNorm * a_pen);
+
 	if (a_actor2) {
 		a_actor2->SetPosition(a_actor2->GetPosition() + (1 + body1Factor) * a_collisionNorm * a_pen);
 	}
@@ -301,7 +313,5 @@ bool PhysicsScene::Box2Box(PhysicsObject* obj1, PhysicsObject* obj2)
 		}
 		return true;
 	}
-
-
 	return false;
 }

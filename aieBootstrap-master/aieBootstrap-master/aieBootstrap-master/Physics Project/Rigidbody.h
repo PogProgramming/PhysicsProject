@@ -1,5 +1,8 @@
 #pragma once
 #include "PhysicsObject.h"
+#include <list>
+#include <functional>
+#include <iostream>
 
 class Rigidbody : public PhysicsObject
 {
@@ -32,7 +35,20 @@ public:
 
 	glm::vec2 ToWorld(glm::vec2 a_localPos);
 
+	std::function<void(PhysicsObject*)> m_collisionCallback;
+
+	void TriggerEntered(PhysicsObject* a_otherActor);
+	std::function<void(PhysicsObject*)> triggerEnter;
+	std::function<void(PhysicsObject*)> triggerExit;
+	bool IsTrigger() { return m_isTrigger; }
+	bool SetTrigger(bool a_state) { return m_isTrigger = a_state; }
+
 protected:
+	bool m_isTrigger;
+	std::list<PhysicsObject*> m_objectInside;
+	std::list<PhysicsObject*> m_objectInsideThisFrame;
+
+
 	glm::vec2 m_position;
 	glm::vec2 m_velocity;
 	float m_mass;
