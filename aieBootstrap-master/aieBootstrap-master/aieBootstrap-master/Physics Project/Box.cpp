@@ -14,7 +14,6 @@ Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_m
 {
 	m_color = a_colour;
 	m_moment = 1.0f / 3.0f * m_mass * a_width * a_height;
-
 }
 
 Box::~Box()

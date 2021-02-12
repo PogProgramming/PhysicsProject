@@ -23,7 +23,7 @@ Game::~Game()
 
 void Game::Init()
 {
-	m_physicsScene->SetGravity({ 0, -9.8 });
+	m_physicsScene->SetGravity({ 0, 0 });
 	BuildMap();
 }
 
@@ -42,29 +42,29 @@ void Game::Draw()
 
 void Game::BuildMap()
 {
-	Box* borderTop = new Box({ 0,55 }, { 0, 0 }, 0, 0, 100, 2, { 0, 0.5f, 0.5f, 1 }); // 200x110? maxY = 55
-	Box* borderBottom = new Box({ 0, -55 }, { 0, 0 }, 0, 0, 100, 2, { 0, 0.5f, 0.5f, 1 }); // 200x110? minY = -55
-	Box* borderLeft = new Box({ 98.5f, 0 }, { 0, 0 }, 0, 0, 2, 55, { 0, 0.5f, 0.5f, 1 });
-	Box* borderRight = new Box({ -98.5f, 0 }, { 0, 0 }, 0, 0, 2, 55, { 0, 0.5f, 0.5f, 1 });
+	Box* borderTop = new Box({ 0,55 }, { 0, 0 }, 0, 100, 100, 2, { 0, 0.5f, 0.5f, 1 }); // 200x110? maxY = 55
+	Box* borderBottom = new Box({ 0, -55 }, { 0, 0 }, 0, 100, 100, 2, { 0, 0.5f, 0.5f, 1 }); // 200x110? minY = -55
+	Box* borderLeft = new Box({ 98.5f, 0 }, { 0, 0 }, 0, 100, 2, 55, { 0, 0.5f, 0.5f, 1 });
+	Box* borderRight = new Box({ -98.5f, 0 }, { 0, 0 }, 0, 100, 2, 55, { 0, 0.5f, 0.5f, 1 });
 
 	borderTop->SetKinematic(true);
 	borderBottom->SetKinematic(true);
 	borderLeft->SetKinematic(true);
 	borderRight->SetKinematic(true);
 
-	borderTop->SetElasticity(1);
-	borderBottom->SetElasticity(1);
-	borderLeft->SetElasticity(1);
-	borderRight->SetElasticity(1);
+	borderTop->SetElasticity(1.0f);
+	borderBottom->SetElasticity(1.0f);
+	borderLeft->SetElasticity(1.0f);
+	borderRight->SetElasticity(1.0f);
 
 	m_physicsScene->AddActor(borderTop);
 	m_physicsScene->AddActor(borderBottom);
 	m_physicsScene->AddActor(borderLeft);
 	m_physicsScene->AddActor(borderRight);
 
-	Sphere* ball = new Sphere({ 0, 30 }, { 10, 10 }, 1, 5, { 0, 1, 0, 1 });
+	Sphere* ball = new Sphere({ 0, 30 }, { 10, 10 }, 5, 4, { 0, 1, 0, 1 });
 	ball->ApplyForce({ 100, 100 }, ball->GetPosition());
-	ball->SetElasticity(0.8f);
+	ball->SetElasticity(1.0f);
 	ball->SetKinematic(false);
 	m_physicsScene->AddActor(ball);
 }
