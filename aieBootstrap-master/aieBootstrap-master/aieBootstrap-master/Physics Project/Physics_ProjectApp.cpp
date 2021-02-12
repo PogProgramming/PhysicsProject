@@ -11,7 +11,10 @@
 #include "Spring.h"
 
 Physics_ProjectApp::Physics_ProjectApp() {
-
+	m_2dRenderer = nullptr;
+	m_font = nullptr;
+	m_game = nullptr;
+	m_physicsScene = nullptr;
 }
 
 Physics_ProjectApp::~Physics_ProjectApp() {
@@ -20,7 +23,7 @@ Physics_ProjectApp::~Physics_ProjectApp() {
 
 bool Physics_ProjectApp::startup() {
 	
-	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
+	aie::Gizmos::create(255U, 255U, 6553500U, 6500535U);
 
 	m_2dRenderer = new aie::Renderer2D();
 
@@ -29,25 +32,30 @@ bool Physics_ProjectApp::startup() {
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->SetGravity(glm::vec2(0, -9.8));
+	m_physicsScene->SetGravity(glm::vec2(0, 0));
 
 	// Lower the value, the more accuratethe simulation ill be;
 	// but it will increase the processing time required. If it
 	// is too high it can cause the simulation to stutter and reduce stability.
 	m_physicsScene->SetTimeStep(0.01f);
+
+	m_game = new Game(m_physicsScene);
+
+	m_game->Init();
 	
 	//SphereAndPlane();
 	//DrawRect();
 	//SpringTest(10);
-	TriggerTest();
+	//TriggerTest();
 
 	return true;
 }
 
 void Physics_ProjectApp::shutdown() {
-
 	delete m_font;
 	delete m_2dRenderer;
+	delete m_game;
+	delete m_physicsScene;
 }
 
 float timer = 0.0f;
@@ -57,9 +65,9 @@ void Physics_ProjectApp::update(float deltaTime) {
 	aie::Input* input = aie::Input::getInstance();
 
 	aie::Gizmos::clear();
-	
-	m_physicsScene->Update(deltaTime);
-	m_physicsScene->Draw();
+
+	m_game->Update(deltaTime);
+	m_game->Draw();
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_E))
@@ -69,7 +77,7 @@ void Physics_ProjectApp::update(float deltaTime) {
 	else waitTill = 0.5f;
 	if (timer > waitTill) {
 		Sphere* ball0;
-		ball0 = new Sphere(glm::vec2(-31, 0), glm::vec2(0, 0), 5.0f, 7, glm::vec4(0, 1, 0, 1));
+		ball0 = new Sphere(glm::vec2(-31, 0), glm::vec2(0, 0), 5.0f, 1, glm::vec4(glm::linearRand(0, 100) / 100.0f, glm::linearRand(0, 100) / 100.0f, glm::linearRand(0, 100) / 100.0f, 1));
 		ball0->ApplyForce({ deltaTime * 100000, 0 }, glm::vec2(0));
 		m_physicsScene->AddActor(ball0);
 		waitTill -= deltaTime * 2;
@@ -97,6 +105,7 @@ void Physics_ProjectApp::draw() {
 	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.0f, 1.0f));
 
 	// draw your stuff here!
+
 	char fps[32];
 	sprintf_s(fps, 32, "FPS: %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
@@ -172,7 +181,7 @@ void Physics_ProjectApp::SphereAndPlane()
 	Sphere* ball5;
 	Sphere* ball6;
 	//Sphere* ball7;
-
+	
 
 	ball = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 3, glm::vec4(1, 1, 1, 1));
 	ball2 = new Sphere(glm::vec2(32, 29), glm::vec2(0, 0), 1.0f, 3, glm::vec4(1, 1, 0, 1));
@@ -212,21 +221,21 @@ void Physics_ProjectApp::SphereAndPlane()
 void Physics_ProjectApp::TriggerTest()
 {
 	Sphere* ball1 = new Sphere(glm::vec2(-20, 0), glm::vec2(0), 4, 4, glm::vec4(1, 0, 0, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(10, -20), glm::vec2(0), 4, 4, glm::vec4(0, 0.5f, 0.5f, 1));
-	ball2->SetKinematic(true);
-	ball2->SetTrigger(true);
+	//Sphere* ball2 = new Sphere(glm::vec2(10, -20), glm::vec2(0), 4, 4, glm::vec4(0, 0.5f, 0.5f, 1));
+	//ball2->SetKinematic(true);
+	//ball2->SetTrigger(true);
 
 	m_physicsScene->AddActor(ball1);
-	m_physicsScene->AddActor(ball2);
+	//m_physicsScene->AddActor(ball2);
 	m_physicsScene->AddActor(new Plane(glm::vec2(0, 1), -30));
 	m_physicsScene->AddActor(new Plane(glm::vec2(1, 0), -50));
 	m_physicsScene->AddActor(new Plane(glm::vec2(-1, 0), -50));
-	m_physicsScene->AddActor(new Box(glm::vec2(20, 10), glm::vec2(10, 0), 0.5f, 4, 8, 4));
-	m_physicsScene->AddActor(new Box(glm::vec2(-40, 10), glm::vec2(10, 0), 0.5f, 4, 8, 4));
-	m_physicsScene->AddActor(new Box(glm::vec2(-40, 40), glm::vec2(10, 0), 0.5f, 4, 8, 4));
+	//m_physicsScene->AddActor(new Box(glm::vec2(20, 10), glm::vec2(10, 0), 0.5f, 4, 8, 4));
+	//m_physicsScene->AddActor(new Box(glm::vec2(-40, 10), glm::vec2(10, 0), 0.5f, 4, 8, 4));
+	//m_physicsScene->AddActor(new Box(glm::vec2(-40, 40), glm::vec2(10, 0), 0.5f, 4, 8, 4));
 
-	ball2->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; };
-	ball2->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
+	//ball2->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; };
+	//ball2->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
 
 }
 

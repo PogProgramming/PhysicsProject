@@ -1,18 +1,20 @@
-#include <Gizmos.h>
 #include "Box.h"
+#include <Gizmos.h>
 
 Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height)
-	: Rigidbody(BOX, a_position, a_velocity, a_rotation, a_mass), m_extents(a_width, a_height)
+	: Rigidbody(ShapeType::BOX, a_position, a_velocity, a_rotation, a_mass), m_extents(a_width, a_height)
 {
 	m_color = glm::vec4(1, 0, 0, 1);
 	m_moment = 1.0f / 3.0f * m_mass * a_width * a_height;
+
 }
 
-Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height, glm::vec4 a_color)
-	: Rigidbody(BOX, a_position, a_velocity, a_rotation, a_mass), m_extents(a_width, a_height)
+Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height, glm::vec4 a_colour)
+	: Rigidbody(ShapeType::BOX, a_position, a_velocity, a_rotation, a_mass), m_extents(a_width, a_height)
 {
-	m_color = a_color;
+	m_color = a_colour;
 	m_moment = 1.0f / 3.0f * m_mass * a_width * a_height;
+
 }
 
 Box::~Box()
@@ -25,6 +27,7 @@ void Box::FixedUpdate(glm::vec2 a_gravity, float a_timeStep)
 
 	float cs = cosf(m_rotation);
 	float sn = sinf(m_rotation);
+
 	m_localX = glm::normalize(glm::vec2(cs, sn));
 	m_localY = glm::normalize(glm::vec2(-sn, cs));
 }
@@ -40,7 +43,8 @@ void Box::MakeGizmo()
 	aie::Gizmos::add2DTri(p1, p4, p3, m_color);
 }
 
-bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numContacts, float& a_pen, glm::vec2& a_edgeNormal)
+bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numContacts,
+	float& a_pen, glm::vec2& a_edgeNormal)
 {
 	float minX, maxX, minY, maxY;
 	float boxW = a_box.GetExtents().x * 2;
@@ -49,36 +53,42 @@ bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numCont
 	glm::vec2 localContact(0, 0);
 	bool first = true;
 
-	// Loop over all the corners of the other box
-	for (float x = -a_box.GetExtents().x; x < boxW; x += boxW) {
-		for (float y = -a_box.GetExtents().y; y < boxH; y += boxH) {
+	// Loop over all the corner of the other box
+	for (float x = -a_box.GetExtents().x; x < boxW; x += boxW)
+	{
+		for (float y = -a_box.GetExtents().y; y < boxH; y += boxH)
+		{
 			// Get the position in world space
-			glm::vec2 p = a_box.GetPosition() + x * a_box.m_localX + y + a_box.m_localY;
+			glm::vec2 p = a_box.GetPosition() + x * a_box.m_localX + y * a_box.m_localY;
 
 			// Get the position in our box's space
-			glm::vec2 p0(glm::dot(p - m_position, m_localX), glm::dot(p - m_position, m_localY));
+			glm::vec2 p0(glm::dot(p - m_position, m_localX),
+				glm::dot(p - m_position, m_localY));
 
 			// Update the extents in each cardinal direction of our box's space
-			// ~ Extents along the spearating axes
+			// ~ Extents along the separating axes
+
 			if (first || p0.x < minX) minX = p0.x;
 			if (first || p0.x > maxX) maxX = p0.x;
+
 			if (first || p0.y < minY) minY = p0.y;
 			if (first || p0.y > maxY) maxY = p0.y;
 
 			if (p0.x >= -m_extents.x && p0.x <= m_extents.x &&
-				p0.y >= -m_extents.y && p0.y <= m_extents.y) {
+				p0.y >= -m_extents.y && p0.y <= m_extents.y)
+			{
 				numLocalContacts++;
 				localContact += p0;
 			}
 			first = false;
-			return false;
+
 		}
 	}
-
-	// If we lie entirely to one side of the box axis, we've found a separating
+	// If we lie entirely to one side of the box along one axis, we've found a separating 
 	// axis, and we can exit
 
-	if (maxX <= -m_extents.x || minX >= m_extents.x || maxY <= -m_extents.y || minY >= m_extents.y)
+	if (maxX <= -m_extents.x || minX >= m_extents.x ||
+		maxY <= -m_extents.y || minY >= m_extents.y)
 		return false;
 
 	if (numLocalContacts == 0)
@@ -104,7 +114,9 @@ bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numCont
 		a_pen = pen0;
 		res = true;
 	}
-	pen0 = m_extents.y - maxY;
+
+	pen0 = m_extents.y - minY;
+
 	if (pen0 > 0 && (pen0 < a_pen || a_pen == 0))
 	{
 		a_edgeNormal = m_localY;
@@ -118,7 +130,5 @@ bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numCont
 		a_pen = pen0;
 		res = true;
 	}
-
 	return res;
 }
-

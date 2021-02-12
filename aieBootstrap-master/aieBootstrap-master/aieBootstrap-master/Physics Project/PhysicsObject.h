@@ -3,7 +3,7 @@
 
 // This is a pure abstract class. It will be used as a base for the derived classes.
 
-enum ShapeType {
+enum class ShapeType {
 	JOINT = -1,
 	PLANE = 0, 
 	SPHERE,
@@ -22,7 +22,7 @@ public:
 
 	virtual bool IsInside(glm::vec2 a_point) = 0;
 
-	ShapeType GetShapeID() { return m_shapeID; }
+	ShapeType GetShapeID() { return ShapeType(m_shapeID); }
 
 	bool IsKinematic() { return m_isKinematic; }
 	bool SetKinematic(bool a_state) { return m_isKinematic = a_state; }
@@ -33,7 +33,7 @@ public:
 
 	float SetRotation(float a_rotate) { return m_rotation = a_rotate; }
 protected:
-	ShapeType m_shapeID;
+	ShapeType m_shapeID = ShapeType::SHAPE_COUNT;
 
 	float m_rotation;
 	bool m_isKinematic;

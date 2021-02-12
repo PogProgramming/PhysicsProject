@@ -33,10 +33,6 @@ PhysicsScene::~PhysicsScene()
 	for (auto pActor : m_actors) {
 		delete pActor;
 	}
-
-	for (auto particle : m_particles) {
-		delete particle;
-	}
 }
 
 void PhysicsScene::AddActor(PhysicsObject* a_actor)
@@ -74,10 +70,6 @@ void PhysicsScene::Draw()
 	for (auto pActor : m_actors) {
 		pActor->MakeGizmo();
 	}
-
-	for (auto particle : m_particles) {
-		particle->MakeGizmo();
-	}
 }
 
 void PhysicsScene::DebugScene()
@@ -100,13 +92,14 @@ void PhysicsScene::CheckForCollision()
 		{
 			PhysicsObject* objOuter = m_actors[outer];
 			PhysicsObject* objInner = m_actors[inner];
-			int shapeID_out = objOuter->GetShapeID();
-			int shapeID_in = objInner->GetShapeID();
+			int shapeID_out = (int)objOuter->GetShapeID();
+			int shapeID_in = (int)objInner->GetShapeID();
 
-			// This will check to ensure we do not include the joints
-			if (shapeID_in >= 0 && shapeID_out >= 0) {
+			// this will check to ensure we do not include the joints
+			if (shapeID_in >= 0 && shapeID_out >= 0)
+			{
 				// Uses our function pointers (fn)
-				int functionIndex = (shapeID_out * ShapeType::SHAPE_COUNT) + shapeID_in;
+				int functionIndex = (shapeID_out * (int)ShapeType::SHAPE_COUNT) + shapeID_in;
 				fn collisionFunctionPtr = collisionFunctionArray[functionIndex];
 				if (collisionFunctionPtr != nullptr)
 				{
@@ -114,23 +107,30 @@ void PhysicsScene::CheckForCollision()
 					collisionFunctionPtr(objOuter, objInner);
 				}
 			}
+
+
+
 		}
 	}
+
 
 }
 
 void PhysicsScene::ApplyContactForces(Rigidbody* a_actor1, Rigidbody* a_actor2, glm::vec2 a_collisionNorm, float a_pen)
 {
 	if ((a_actor1 && a_actor1->IsTrigger()) || (a_actor2 && a_actor2->IsTrigger()))
+	{
 		return;
+	}
 
 	float body2Mass = a_actor2 ? a_actor2->GetMass() : INT_MAX;
 	float body1Factor = body2Mass / (a_actor1->GetMass() + body2Mass);
 
 	a_actor1->SetPosition(a_actor1->GetPosition() - body1Factor * a_collisionNorm * a_pen);
 
-	if (a_actor2) {
-		a_actor2->SetPosition(a_actor2->GetPosition() + (1 + body1Factor) * a_collisionNorm * a_pen);
+	if (a_actor2)
+	{
+		a_actor2->SetPosition(a_actor2->GetPosition() + (1 - body1Factor) * a_collisionNorm * a_pen);
 	}
 }
 
@@ -236,8 +236,6 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* objSphere, PhysicsObject* otherO
 		}
 
 	}
-
-
 	return false;
 }
 
@@ -281,9 +279,9 @@ bool PhysicsScene::Sphere2Box(PhysicsObject* objSphere, PhysicsObject* objBox)
 	return false;
 }
 
-bool PhysicsScene::Box2Plane(PhysicsObject*, PhysicsObject*)
+bool PhysicsScene::Box2Plane(PhysicsObject* objBox, PhysicsObject* objPlane)
 {
-	return false;
+	return Plane2Box(objPlane, objBox);
 }
 
 bool PhysicsScene::Box2Sphere(PhysicsObject* objBox, PhysicsObject* objSphere)

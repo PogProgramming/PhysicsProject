@@ -29,6 +29,7 @@ public:
 
  	float GetMass() { return m_isKinematic ? INT_MAX : m_mass; }
 	float GetMoment() { return m_isKinematic ? INT_MAX : m_moment; }
+
 	float GetAngularVelocity() { return m_angularVelocity; }
 	float GetLinearDraw() { return m_linearDrag; }
 	float GetAngularDrag() { return m_angularDrag; }
@@ -44,10 +45,9 @@ public:
 	bool SetTrigger(bool a_state) { return m_isTrigger = a_state; }
 
 protected:
-	bool m_isTrigger;
+	bool m_isTrigger = false;
 	std::list<PhysicsObject*> m_objectInside;
 	std::list<PhysicsObject*> m_objectInsideThisFrame;
-
 
 	glm::vec2 m_position;
 	glm::vec2 m_velocity;

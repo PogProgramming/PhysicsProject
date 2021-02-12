@@ -2,7 +2,7 @@
 
 Spring::Spring(Rigidbody* a_actor1, Rigidbody* a_actor2, 
 	float a_damping, float a_springCoefficient, float a_restLength, 
-	glm::vec2 a_contact1, glm::vec2 a_contact2) : PhysicsObject(JOINT), 
+	glm::vec2 a_contact1, glm::vec2 a_contact2) : PhysicsObject(ShapeType::JOINT),
 	m_actor1(a_actor1), m_actor2(a_actor2), m_damping(a_damping), m_springCoefficient(a_springCoefficient),
 	m_restLength(a_restLength), m_contact1(a_contact1), m_contact2(a_contact2)
 {
