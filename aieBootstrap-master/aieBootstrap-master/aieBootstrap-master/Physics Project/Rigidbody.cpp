@@ -16,7 +16,7 @@ Rigidbody::Rigidbody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velo
 	m_isTrigger = false;
 	m_elasticity = 1.0f;
 	m_linearDrag = 0.3f;
-	m_angularDrag = 0.3f;
+	m_angularDrag = 0.6f;
 }
 
 void Rigidbody::FixedUpdate(glm::vec2 a_gravity, float a_timeStep)

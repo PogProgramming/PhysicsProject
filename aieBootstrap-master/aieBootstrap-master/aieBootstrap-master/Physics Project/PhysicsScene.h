@@ -45,11 +45,11 @@ public:
 	static bool Box2Sphere (PhysicsObject*, PhysicsObject*);
 	static bool Box2Box(PhysicsObject*, PhysicsObject*);
 
+	std::vector<PhysicsObject*> m_actors;
 
 protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;
 
-	std::vector<PhysicsObject*> m_actors;
 };
 

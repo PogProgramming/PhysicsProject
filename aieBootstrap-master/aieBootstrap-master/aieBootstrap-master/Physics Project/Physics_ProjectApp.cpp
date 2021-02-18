@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "glm\ext.hpp"
 #include <Gizmos.h>
+#include <string>
 
 #include "Sphere.h"
 #include "Plane.h"
@@ -92,6 +93,24 @@ void Physics_ProjectApp::update(float deltaTime) {
 		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
 		aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.3f));
 	}
+
+	if (input->isMouseButtonDown(0)) {
+		int xScreen, yScreen;
+		input->getMouseXY(&xScreen, &yScreen);
+		m_game->worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+
+		//m_game->worldPos.x = (float)input->getMouseX();
+		//m_game->worldPos.y = (float)input->getMouseY();
+
+		aie::Gizmos::add2DCircle(m_game->worldPos, 10, 32, glm::vec4(0.3f));
+		aie::Gizmos::add2DLine(m_game->m_player->GetPosition(), m_game->worldPos, glm::vec4(1), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	}
+	if (input->wasMouseButtonReleased(0)) {
+		m_game->worldPos.x *= 2; m_game->worldPos.y *= 2;
+		m_game->m_player->ApplyForce((m_game->worldPos - m_game->m_player->GetPosition()), glm::vec2(0));
+
+		m_game->m_strokes++;
+	}
 }
 
 void Physics_ProjectApp::draw() {
@@ -111,7 +130,9 @@ void Physics_ProjectApp::draw() {
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
 
 	// output some text, uses the last used colour
-	m_2dRenderer->drawText(m_font, "Press E to quit", 0, 0);
+	char strokes[32];
+	sprintf_s(strokes, 32, "Strokes: %i", m_game->m_strokes);
+	m_2dRenderer->drawText(m_font, strokes, 0, 0);
 
 	// done drawing sprites
 	m_2dRenderer->end();

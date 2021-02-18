@@ -5,7 +5,6 @@
 #include "glm\ext.hpp"
 #include <Gizmos.h>
 
-#include "Sphere.h"
 #include "Plane.h"
 #include "Box.h"
 #include "Spring.h"
@@ -24,20 +23,49 @@ Game::~Game()
 void Game::Init()
 {
 	m_physicsScene->SetGravity({ 0, 0 });
-	BuildMap();
+	Build_Level1();
 }
 
 
 void Game::Update(float deltaTime)
 {
-	m_physicsScene->Update(deltaTime);
+	aie::Input* input = aie::Input::getInstance();
 
-	//std::cout << m_physicsScene->m_act<< " : " << m_physicsScene->GetGravity().y << "\n";
+	if (!m_levelChanged) {
+		m_levelChanged = true;
+
+		m_activeLevel++;
+
+		switch (m_activeLevel) {
+		case 1:
+			Build_Level1();
+			break;
+		case 2:
+			Build_Level2();
+			break;
+		}
+	}
+
+	m_physicsScene->Update(deltaTime);
 }
 
 void Game::Draw()
 {
 	m_physicsScene->Draw();
+}
+
+void Game::Reset()
+{
+	m_strokes = 0;
+	for (auto p_actor : m_physicsScene->m_actors) {
+		delete p_actor;
+	}
+}
+
+void Game::ReachedGoal()
+{
+	m_levelChanged = false;
+	Reset();
 }
 
 void Game::BuildMap()
@@ -52,19 +80,63 @@ void Game::BuildMap()
 	borderLeft->SetKinematic(true);
 	borderRight->SetKinematic(true);
 
-	borderTop->SetElasticity(1.0f);
-	borderBottom->SetElasticity(1.0f);
-	borderLeft->SetElasticity(1.0f);
-	borderRight->SetElasticity(1.0f);
+	borderTop->SetElasticity(0.6f);
+	borderBottom->SetElasticity(0.6f);
+	borderLeft->SetElasticity(0.6f);
+	borderRight->SetElasticity(0.6f);
 
 	m_physicsScene->AddActor(borderTop);
 	m_physicsScene->AddActor(borderBottom);
 	m_physicsScene->AddActor(borderLeft);
 	m_physicsScene->AddActor(borderRight);
-
-	Sphere* ball = new Sphere({ 0, 30 }, { 10, 10 }, 5, 4, { 0, 1, 0, 1 });
-	ball->ApplyForce({ 100, 100 }, ball->GetPosition());
-	ball->SetElasticity(1.0f);
-	ball->SetKinematic(false);
-	m_physicsScene->AddActor(ball);
 }
+
+void Game::Build_Level1()
+{
+	BuildMap();
+
+	Box* obstacle1 = new Box({ 0, 0 }, { 0, 0 }, 0, 175, 80, 2, { 0, 0, 1, 1 });
+	obstacle1->SetKinematic(true);
+	obstacle1->SetElasticity(0.6f);
+	m_physicsScene->AddActor(obstacle1);
+
+	m_player = new Sphere({ -85, -45 }, { 0, 0 }, 2, 2, { 0, 1, 0, 1 });
+	m_player->SetElasticity(0.6f);
+	m_player->SetKinematic(false);
+	m_physicsScene->AddActor(m_player);
+
+	m_endGoal = new Sphere({ 85, 45 }, { 0, 0 }, 2, 3, { 1, 0, 0, 1 });
+	m_endGoal->SetElasticity(0.0f);
+	m_endGoal->SetKinematic(true);
+	m_endGoal->SetTrigger(true);
+	m_physicsScene->AddActor(m_endGoal);
+
+	m_endGoal->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; ReachedGoal(); };
+	m_endGoal->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
+}
+
+void Game::Build_Level2()
+{
+	BuildMap();
+
+	Box* obstacle1 = new Box({ 0, 0 }, { 0, 0 }, 0, 175, 2, 80, { 0, 0, 1, 1 });
+	obstacle1->SetKinematic(true);
+	obstacle1->SetElasticity(0.6f);
+	m_physicsScene->AddActor(obstacle1);
+
+	m_player = new Sphere({ -85, -45 }, { 0, 0 }, 2, 2, { 0, 1, 0, 1 });
+	m_player->SetElasticity(0.6f);
+	m_player->SetKinematic(false);
+	m_physicsScene->AddActor(m_player);
+
+	m_endGoal = new Sphere({ 85, 45 }, { 0, 0 }, 2, 3, { 1, 0, 0, 1 });
+	m_endGoal->SetElasticity(0.0f);
+	m_endGoal->SetKinematic(true);
+	m_endGoal->SetTrigger(true);
+	m_physicsScene->AddActor(m_endGoal);
+
+	m_endGoal->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; ReachedGoal(); };
+	m_endGoal->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
+
+}
+

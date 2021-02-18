@@ -8,7 +8,6 @@ Sphere::Sphere(glm::vec2 a_position, glm::vec2 a_velocity, float a_mass, float a
 	m_radius = a_radius;
 	m_color = a_color;
 	m_moment = 0.5f * m_mass * m_radius * m_radius;
-	//m_angularVelocity = 0;
 }
 
 void Sphere::MakeGizmo()
