@@ -130,9 +130,10 @@ void Physics_ProjectApp::draw() {
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
 
 	// output some text, uses the last used colour
-	char strokes[32];
-	sprintf_s(strokes, 32, "Strokes: %i", m_game->m_strokes);
-	m_2dRenderer->drawText(m_font, strokes, 0, 0);
+	/*char strokes[32];*/
+	//sprintf_s(strokes, 32, "Strokes: %i", m_game->m_strokes);
+	std::string strokes = std::to_string(m_game->m_strokes);
+	m_2dRenderer->drawText(m_font, strokes.c_str(), 0, 0);
 
 	// done drawing sprites
 	m_2dRenderer->end();

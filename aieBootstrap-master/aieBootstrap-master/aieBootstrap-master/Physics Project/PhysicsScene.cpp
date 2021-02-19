@@ -126,7 +126,10 @@ void PhysicsScene::ApplyContactForces(Rigidbody* a_actor1, Rigidbody* a_actor2, 
 	float body2Mass = a_actor2 ? a_actor2->GetMass() : INT_MAX;
 	float body1Factor = body2Mass / (a_actor1->GetMass() + body2Mass);
 
-	a_actor1->SetPosition(a_actor1->GetPosition() - body1Factor * a_collisionNorm * a_pen);
+	if (a_actor1 != nullptr)
+	{
+		a_actor1->SetPosition(a_actor1->GetPosition() - body1Factor * a_collisionNorm * a_pen);
+	}
 
 	if (a_actor2)
 	{
@@ -200,7 +203,7 @@ bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlan
 	Sphere* sphere = dynamic_cast<Sphere*>(objSphere);
 	Plane* plane = dynamic_cast<Plane*>(objPlane);
 
-	// If there have a value continue below
+	// If they have a value continue below
 	if (sphere != nullptr && plane != nullptr)
 	{
 		glm::vec2 collisionNormal = plane->GetNormal();
@@ -251,7 +254,7 @@ bool PhysicsScene::Sphere2Box(PhysicsObject* objSphere, PhysicsObject* objBox)
 		glm::vec2 circlePosBox = glm::vec2(glm::dot(circlePosWorld, box->GetLocalX()),
 			glm::dot(circlePosWorld, box->GetLocalY()));
 
-		// Find the colsest point to the circle's centre on the box 
+		// Find the closest point to the circle's centre on the box 
 		// by clamping the coordinates in the box-space to the box's extents
 		glm::vec2 closestPointOnTheBox = circlePosBox;
 		glm::vec2 extents = box->GetExtents();

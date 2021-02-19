@@ -158,9 +158,7 @@ void Rigidbody::ResolveCollision(Rigidbody* a_otherActor, glm::vec2 a_contact, g
 		{
 			PhysicsScene::ApplyContactForces(this, a_otherActor, normal, a_pen);
 		}
-
 	}
-
 }
 
 glm::vec2 Rigidbody::ToWorld(glm::vec2 a_localPos)
