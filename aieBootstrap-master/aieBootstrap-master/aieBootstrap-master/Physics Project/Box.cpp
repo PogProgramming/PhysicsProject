@@ -6,7 +6,6 @@ Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_m
 {
 	m_color = glm::vec4(1, 0, 0, 1);
 	m_moment = 1.0f / 3.0f * m_mass * a_width * a_height;
-
 }
 
 Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height, glm::vec4 a_colour)
@@ -80,10 +79,9 @@ bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numCont
 				localContact += p0;
 			}
 			first = false;
-
 		}
 	}
-	// If we lie entirely to one side of the box along one axis, we've found a separating 
+	// If we lie entirely to one side of the box along one axis, we've found a separating
 	// axis, and we can exit
 
 	if (maxX <= -m_extents.x || minX >= m_extents.x ||

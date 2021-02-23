@@ -11,16 +11,16 @@
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] = {
-	PhysicsScene::Plane2Plane, 
-	PhysicsScene::Plane2Sphere, 
+	PhysicsScene::Plane2Plane,
+	PhysicsScene::Plane2Sphere,
 	PhysicsScene::Plane2Box,
 
-	PhysicsScene::Sphere2Plane, 
-	PhysicsScene::Sphere2Sphere, 
+	PhysicsScene::Sphere2Plane,
+	PhysicsScene::Sphere2Sphere,
 	PhysicsScene::Sphere2Box,
 
-	PhysicsScene::Box2Plane, 
-	PhysicsScene::Box2Sphere, 
+	PhysicsScene::Box2Plane,
+	PhysicsScene::Box2Sphere,
 	PhysicsScene::Box2Box
 };
 
@@ -40,12 +40,14 @@ void PhysicsScene::AddActor(PhysicsObject* a_actor)
 	m_actors.push_back(a_actor);
 }
 
-void PhysicsScene::RemoveActor(PhysicsObject* a_actor)
+void PhysicsScene::RemoveActor(PhysicsObject* a_actor, bool a_forceDelete)
 {
-	auto it = std::find(m_actors.begin(), m_actors.end(), a_actor);
-	
-	if (it != m_actors.end()) {
-		m_actors.erase(it);
+	if (!a_actor->IsProtectedFromDelete() || a_forceDelete == true) {
+		auto it = std::find(m_actors.begin(), m_actors.end(), a_actor);
+
+		if (it != m_actors.end()) {
+			m_actors.erase(it);
+		}
 	}
 }
 
@@ -56,7 +58,7 @@ void PhysicsScene::Update(float dt)
 
 	while (accumulatedTime >= m_timeStep) {
 		for (auto pActor : m_actors) {
-			pActor->FixedUpdate(m_gravity, m_timeStep);
+			if(pActor->IsActive()) pActor->FixedUpdate(m_gravity, m_timeStep);
 		}
 
 		accumulatedTime -= m_timeStep;
@@ -67,8 +69,10 @@ void PhysicsScene::Update(float dt)
 
 void PhysicsScene::Draw()
 {
-	for (auto pActor : m_actors) {
-		pActor->MakeGizmo();
+	if (m_actors.size() > 0) {
+		for (auto pActor : m_actors) {
+			if(pActor->IsVisible()) pActor->MakeGizmo();
+		}
 	}
 }
 
@@ -107,13 +111,8 @@ void PhysicsScene::CheckForCollision()
 					collisionFunctionPtr(objOuter, objInner);
 				}
 			}
-
-
-
 		}
 	}
-
-
 }
 
 void PhysicsScene::ApplyContactForces(Rigidbody* a_actor1, Rigidbody* a_actor2, glm::vec2 a_collisionNorm, float a_pen)
@@ -175,7 +174,7 @@ bool PhysicsScene::Plane2Box(PhysicsObject* objPlane, PhysicsObject* objBox)
 				glm::vec2 pointVelocity = box->GetVelocity() + box->GetAngularVelocity() *
 					glm::vec2(-displacement.y, displacement.x);
 
-				// this is the amount of the point velocity inot the plane
+				// this is the amount of the point velocity into the plane
 				float velocityIntoPlane = glm::dot(pointVelocity, plane->GetNormal());
 
 				// Moving further in, we need to resolve the collision
@@ -237,7 +236,6 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* objSphere, PhysicsObject* otherO
 			sphere1->ResolveCollision(sphere2, 0.5f * (sphere1->GetPosition() + sphere2->GetPosition()), nullptr, penetration);
 			return true;
 		}
-
 	}
 	return false;
 }
@@ -254,7 +252,7 @@ bool PhysicsScene::Sphere2Box(PhysicsObject* objSphere, PhysicsObject* objBox)
 		glm::vec2 circlePosBox = glm::vec2(glm::dot(circlePosWorld, box->GetLocalX()),
 			glm::dot(circlePosWorld, box->GetLocalY()));
 
-		// Find the closest point to the circle's centre on the box 
+		// Find the closest point to the circle's centre on the box
 		// by clamping the coordinates in the box-space to the box's extents
 		glm::vec2 closestPointOnTheBox = circlePosBox;
 		glm::vec2 extents = box->GetExtents();
@@ -276,7 +274,6 @@ bool PhysicsScene::Sphere2Box(PhysicsObject* objSphere, PhysicsObject* objBox)
 			glm::vec2 contact = closestPointOnBoxWorld;
 			box->ResolveCollision(sphere, contact, &direction, penetration);
 		}
-
 	}
 
 	return false;

@@ -5,7 +5,7 @@
 
 enum class ShapeType {
 	JOINT = -1,
-	PLANE = 0, 
+	PLANE = 0,
 	SPHERE,
 	BOX,
 	SHAPE_COUNT
@@ -32,6 +32,14 @@ public:
 	float SetElasticity(float a_new) { return m_elasticity = a_new; }
 
 	float SetRotation(float a_rotate) { return m_rotation = a_rotate; }
+
+	void SetActive(bool _set) { m_active = _set; }
+	void SetVisible(bool _set) { m_visible = _set; }
+	bool IsActive() { return m_active; }
+	bool IsVisible() { return m_visible; }
+
+	void SetProtectionFromDelete(bool _set) { m_protectedFromDelete = _set; }
+	bool IsProtectedFromDelete() { return m_protectedFromDelete; }
 protected:
 	ShapeType m_shapeID = ShapeType::SHAPE_COUNT;
 
@@ -39,6 +47,10 @@ protected:
 	bool m_isKinematic;
 	float m_elasticity;
 
+	bool m_active = true;
+	bool m_visible = true;
+
+	bool m_protectedFromDelete = false;
+
 	PhysicsObject(ShapeType a_shapeID) : m_shapeID(a_shapeID) {}
 };
-

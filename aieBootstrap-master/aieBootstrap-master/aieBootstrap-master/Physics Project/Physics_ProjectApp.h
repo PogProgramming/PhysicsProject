@@ -2,6 +2,9 @@
 
 #include "Application.h"
 #include "Renderer2D.h"
+#include "Sphere.h"
+#include "Input.h"
+#include "Box.h"
 
 #include "PhysicsScene.h"
 #include "Game.h"
@@ -17,12 +20,12 @@ public:
 
 	virtual void update(float deltaTime);
 	virtual void draw();
-	
+
 	glm::vec2 ScreenToWorld(glm::vec2 a_screenPos);
 
 protected:
-	aie::Renderer2D*	m_2dRenderer;
-	aie::Font*			m_font;
+	aie::Renderer2D* m_2dRenderer;
+	aie::Font* m_font;
 
 	Game* m_game;
 	PhysicsScene* m_physicsScene;

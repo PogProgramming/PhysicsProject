@@ -15,8 +15,8 @@ Rigidbody::Rigidbody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velo
 	m_isKinematic = false;
 	m_isTrigger = false;
 	m_elasticity = 1.0f;
-	m_linearDrag = 0.3f;
-	m_angularDrag = 0.6f;
+	m_linearDrag = 1.0f;
+	m_angularDrag = 1.0f;
 }
 
 void Rigidbody::FixedUpdate(glm::vec2 a_gravity, float a_timeStep)
@@ -75,7 +75,6 @@ void Rigidbody::FixedUpdate(glm::vec2 a_gravity, float a_timeStep)
 		if (length(m_velocity) < length(a_gravity) * m_linearDrag * a_timeStep)
 		{
 			m_velocity = glm::vec2(0, 0);
-
 		}
 	}
 	if (abs(m_angularVelocity) < 0.001f) { m_angularVelocity = 0.f; }
@@ -145,7 +144,6 @@ void Rigidbody::ResolveCollision(Rigidbody* a_otherActor, glm::vec2 a_contact, g
 			{
 				a_otherActor->m_collisionCallback(this);
 			}
-
 		}
 		else
 		{

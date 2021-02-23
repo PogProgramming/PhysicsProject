@@ -19,11 +19,9 @@ Physics_ProjectApp::Physics_ProjectApp() {
 }
 
 Physics_ProjectApp::~Physics_ProjectApp() {
-
 }
 
 bool Physics_ProjectApp::startup() {
-	
 	aie::Gizmos::create(255U, 255U, 6553500U, 6500535U);
 
 	m_2dRenderer = new aie::Renderer2D();
@@ -43,7 +41,7 @@ bool Physics_ProjectApp::startup() {
 	m_game = new Game(m_physicsScene);
 
 	m_game->Init();
-	
+
 	//SphereAndPlane();
 	//DrawRect();
 	//SpringTest(10);
@@ -61,6 +59,7 @@ void Physics_ProjectApp::shutdown() {
 
 float timer = 0.0f;
 float waitTill = 0.5f;
+bool velocityStopped = true;
 void Physics_ProjectApp::update(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
@@ -87,34 +86,40 @@ void Physics_ProjectApp::update(float deltaTime) {
 		timer = 0;
 	}
 
-	if (input->isMouseButtonDown(0)) {
-		int xScreen, yScreen;
-		input->getMouseXY(&xScreen, &yScreen);
-		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
-		aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.3f));
+	if (abs(m_game->m_player->GetPosition().x) > 200 || abs(m_game->m_player->GetPosition().y) > 200) { // RESET PLAYER
+		m_game->m_player->SetPosition(m_game->GetSpawnPoint());
+		m_game->m_player->SetVelocity({ 0, 0 });
 	}
 
-	if (input->isMouseButtonDown(0)) {
-		int xScreen, yScreen;
-		input->getMouseXY(&xScreen, &yScreen);
-		m_game->worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+	//worldPos.x = (float)a_input->getMouseX();
+	//worldPos.y = (float)a_input->getMouseY();
 
-		//m_game->worldPos.x = (float)input->getMouseX();
-		//m_game->worldPos.y = (float)input->getMouseY();
+	if (m_game->m_player->GetVelocity().x < 0.5f && m_game->m_player->GetVelocity().y < 0.5f) {
 
-		aie::Gizmos::add2DCircle(m_game->worldPos, 10, 32, glm::vec4(0.3f));
-		aie::Gizmos::add2DLine(m_game->m_player->GetPosition(), m_game->worldPos, glm::vec4(1), glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		if (input->isMouseButtonDown(0)){
+			int xScreen, yScreen;
+			input->getMouseXY(&xScreen, &yScreen);
+			m_game->worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+
+			aie::Gizmos::add2DCircle(m_game->worldPos, 3, 32, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			aie::Gizmos::add2DLine(m_game->m_player->GetPosition(), m_game->worldPos, glm::vec4(1), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+
+		if (input->wasMouseButtonReleased(0)){
+			velocityStopped = false;
+			glm::vec2 force((m_game->worldPos - m_game->m_player->GetPosition()));
+			force.x *= 4;
+			force.y *= 4;
+
+			m_game->m_player->ApplyForce(force, glm::vec2(0));
+
+			m_game->m_strokes++;
+		}
 	}
-	if (input->wasMouseButtonReleased(0)) {
-		m_game->worldPos.x *= 2; m_game->worldPos.y *= 2;
-		m_game->m_player->ApplyForce((m_game->worldPos - m_game->m_player->GetPosition()), glm::vec2(0));
 
-		m_game->m_strokes++;
-	}
 }
 
 void Physics_ProjectApp::draw() {
-
 	// wipe the screen to the background colour
 	clearScreen();
 
@@ -170,7 +175,7 @@ void Physics_ProjectApp::SpringTest(int a_amount)
 		}
 		prev = sphere;
 	}
-	
+
 	Box* box = new Box(glm::vec2(0, -20), glm::vec2(0), 0.3f, 20, 8, 2);
 	box->SetKinematic(true);
 	m_physicsScene->AddActor(box);
@@ -185,7 +190,6 @@ void Physics_ProjectApp::DrawRect()
 	box1->SetRotation(0.5);
 
 	m_physicsScene->AddActor(box1);
-
 }
 
 void Physics_ProjectApp::SphereAndPlane()
@@ -203,7 +207,6 @@ void Physics_ProjectApp::SphereAndPlane()
 	Sphere* ball5;
 	Sphere* ball6;
 	//Sphere* ball7;
-	
 
 	ball = new Sphere(glm::vec2(-31, 31), glm::vec2(0, 0), 1.0f, 3, glm::vec4(1, 1, 1, 1));
 	ball2 = new Sphere(glm::vec2(32, 29), glm::vec2(0, 0), 1.0f, 3, glm::vec4(1, 1, 0, 1));
@@ -258,7 +261,6 @@ void Physics_ProjectApp::TriggerTest()
 
 	//ball2->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; };
 	//ball2->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
-
 }
 
 // missed a public inheritance thingy

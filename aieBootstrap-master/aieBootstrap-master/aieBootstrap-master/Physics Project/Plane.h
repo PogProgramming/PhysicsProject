@@ -29,6 +29,4 @@ protected:
 	glm::vec2 m_normal;
 	float m_distanceToOrigin;
 	glm::vec4 m_color;
-
 };
-

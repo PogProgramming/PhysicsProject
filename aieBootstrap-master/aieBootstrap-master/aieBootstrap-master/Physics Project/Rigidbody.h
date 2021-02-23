@@ -23,16 +23,20 @@ public:
 
 	glm::vec2 GetVelocity() { return m_velocity; }
 	void SetVelocity(glm::vec2 a_velocity) { m_velocity = a_velocity; }
-	
+
 	float GetRotation() { return m_rotation; }
 	float SetRotation(float a_rotate) { return m_rotation = a_rotate; }
 
- 	float GetMass() { return m_isKinematic ? INT_MAX : m_mass; }
+	float GetMass() { return m_isKinematic ? INT_MAX : m_mass; }
 	float GetMoment() { return m_isKinematic ? INT_MAX : m_moment; }
+
 
 	float GetAngularVelocity() { return m_angularVelocity; }
 	float GetLinearDraw() { return m_linearDrag; }
 	float GetAngularDrag() { return m_angularDrag; }
+
+	void SetAngularDrag(float _set) { m_angularDrag = _set; }
+	void SetLinearDrag(float _set) { m_linearDrag = _set; }
 
 	glm::vec2 ToWorld(glm::vec2 a_localPos);
 
@@ -63,4 +67,3 @@ protected:
 	glm::vec2 m_localX;
 	glm::vec2 m_localY;
 };
-

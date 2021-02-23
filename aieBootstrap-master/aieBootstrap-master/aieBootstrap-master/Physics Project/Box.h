@@ -17,16 +17,13 @@ public:
 	float GetWidth() { return m_extents.x * 2; }
 	float GetHeight() { return m_extents.y * 2; }
 
-	glm::vec2 const GetExtents() { return m_extents; }
+	glm::vec2  GetExtents() const { return m_extents; }
 	glm::vec2 GetLocalX() { return m_localX; }
 	glm::vec2 GetLocalY() { return m_localY; }
-	
 
 protected:
-	glm::vec2 m_extents; // The half length of the box 
+	glm::vec2 m_extents; // The half length of the box
 	glm::vec4 m_color;
 
 	// These will store the local x and y axes of the box based on its angle of rotation
-
 };
-

@@ -25,7 +25,6 @@ public:
 	glm::vec2 GetContact1() { return m_actor1 ? m_actor1->ToWorld(m_contact1) : m_contact1; }
 	glm::vec2 GetContact2() { return m_actor2 ? m_actor2->ToWorld(m_contact2) : m_contact2; }
 
-
 protected:
 	Rigidbody* m_actor1;
 	Rigidbody* m_actor2;
@@ -36,7 +35,4 @@ protected:
 	float m_damping;
 	float m_restLength;
 	float m_springCoefficient;
-
-
 };
-
