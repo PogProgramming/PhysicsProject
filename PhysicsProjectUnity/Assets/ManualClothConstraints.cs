@@ -14,10 +14,13 @@ public class ManualClothConstraints : MonoBehaviour
     }
 
     int co = 10;
-    bool stick = false;
+    bool stuck = false;
+    bool sticking = false;
+    bool switchingcoes = true;
+    float timer = 0;
     void Update()
     {
-        for(int i = 0; i < coes.Length; i++)
+        for (int i = 0; i < coes.Length; i++)
         {
             if (coes[i].maxDistance != cloth.coefficients[i].maxDistance)
             {
@@ -26,26 +29,37 @@ public class ManualClothConstraints : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            //stick = !stick;
-            //Debug.Log(stick);
-            if (stick)
+            switchingcoes = true;
+        }
+
+        if (switchingcoes && timer > 0.01f)
+        {
+            if (stuck)
             {
-                for (int i = 0; i < cloth.coefficients.Length; i++)
-                {
-                    cloth.coefficients[i].maxDistance = 0;
-                }
+                coes[co].maxDistance = Mathf.Infinity;
+                co++;
             }
             else
             {
-                for (int i = 0; i < cloth.coefficients.Length; i++)
-                {
-                    cloth.coefficients[i].maxDistance = Mathf.Infinity;
-                }
+                coes[co].maxDistance = 0;
+                co++;
             }
-            stick = !stick;
+
+            if (co > 120)
+            {
+                stuck = !stuck;
+                co = 21;
+                switchingcoes = false;
+            }
+
+            cloth.coefficients = coes;
+            timer = 0;
         }
+        timer += Time.deltaTime;
+
+
 
         //if (stick)
         //{
