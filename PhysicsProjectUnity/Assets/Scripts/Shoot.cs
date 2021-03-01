@@ -15,6 +15,8 @@ public class Shoot : MonoBehaviour
     public float gunDamage = 0;
     public float gunBulletSpeed = 0;
 
+    public LayerMask enemyLayer;
+
 
     void Start()
     {
@@ -54,11 +56,26 @@ public class Shoot : MonoBehaviour
 
         ba.SetBullet(gunDamage, gunBulletSpeed, cam.transform.forward);
 
-    }
+        RaycastHit hit;
+        if (Physics.Raycast(gunEndPoint.transform.position, cam.transform.forward, out hit, enemyLayer))
+        {
+            GameObject mainEnemyBody = hit.transform.gameObject;
+            bool checkGood = false;
+            while (mainEnemyBody.transform.name != "EnemyPlayer" || mainEnemyBody.transform.name != "EnemyPlayer(Clone)")
+            {
+                if (mainEnemyBody.transform.parent == null)
+                    break;
+                mainEnemyBody = mainEnemyBody.transform.parent.gameObject;
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawRay(new Ray(gunEndPoint.transform.position, Camera.main.transform.forward));
-        //Gizmos.DrawLine(gunEndPoint.transform.position, Camera.main.transform.forward);
+                if (mainEnemyBody.transform.name == "EnemyPlayer" || mainEnemyBody.transform.name == "EnemyPlayer(Clone)")
+                    checkGood = true;
+            }
+            if (checkGood)
+            {
+                Debug.Log("HELP HELP IM DYING");
+                mainEnemyBody.transform.GetComponent<EnemyHealth>().TakeDamage(gunDamage, hit.normal, gunBulletSpeed, hit.transform.GetComponent<Rigidbody>());
+            }
+        }
+
     }
 }
