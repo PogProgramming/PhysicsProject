@@ -91,9 +91,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.LeftControl))
             StopCrouch();
 
-        if (Input.GetKey(KeyCode.E))
-            rb.AddForce(Vector3.up * 20);
-
         if (Input.GetKey(KeyCode.Escape))
             looking = false;
 
