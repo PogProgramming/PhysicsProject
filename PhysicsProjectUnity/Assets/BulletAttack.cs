@@ -2,31 +2,40 @@
 
 public class BulletAttack : MonoBehaviour
 {
-    public float bulletDamage = 0;
-    public float bulletSpeed = 0;
+    private float bulletDamage = 0;
+    private float bulletForce = 0;
 
-    public Vector3 bulletDirection;
+    private Vector3 bulletDirection;
 
     Vector3 origin;
+
+    Rigidbody rb;
 
     public void SetBullet(float damage, float speed, Vector3 direction)
     {
         bulletDamage = damage;
-        bulletSpeed = speed;
+        bulletForce = speed;
         bulletDirection = direction;
     }
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         origin = transform.position;
-        if (bulletDamage == 0 || bulletSpeed == 0) 
+        if (bulletDamage == 0 || bulletForce == 0) 
             Destroy(gameObject);
+
+        rb.AddForce(bulletDirection * bulletForce, ForceMode.Force);
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(bulletDirection * Time.deltaTime * bulletSpeed);
-        if (Vector3.Distance(origin, transform.position) > 100f) Destroy(gameObject);
+        if (Vector3.Distance(origin, transform.position) > bulletForce) Destroy(gameObject);
+    }
+
+    void TargetHit()
+    {
+        Destroy(gameObject);
     }
 }
