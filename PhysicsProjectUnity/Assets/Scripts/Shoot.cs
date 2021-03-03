@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Shoot : MonoBehaviour
 {
+    public GameObject gun;
+    Animator gunAnimator;
+
     public GameObject bullet = null;
     public GameObject orientation = null;
     public GameObject gunEndPoint = null; // To help with rotation of bullet
@@ -17,10 +20,12 @@ public class Shoot : MonoBehaviour
 
     public LayerMask enemyLayer;
 
+    Camera cam = null;
 
     void Start()
     {
-
+        cam = Camera.main;
+        gunAnimator = gun.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -44,16 +49,21 @@ public class Shoot : MonoBehaviour
         {
             canShoot = false;
             timer = 0;
+            RunGunShotAnimation();
             ShootBullet();
         }
+    }
+    
+    void RunGunShotAnimation()
+    {
+        gunAnimator.Play("anim_GunShot", 0, 0f);
+        //anim_GunShot
     }
 
     void ShootBullet()
     {
-        Camera cam = Camera.main;
-        GameObject bulletObj = GameObject.Instantiate(bullet, gunEndPoint.transform.position, gunEndPoint.transform.rotation);
+        GameObject bulletObj = Instantiate(bullet, gunEndPoint.transform.position, gunEndPoint.transform.rotation);
         BulletAttack ba = bulletObj.GetComponent<BulletAttack>();
-
         ba.SetBullet(gunDamage, gunBulletSpeed, cam.transform.forward);
 
         RaycastHit hit;
@@ -65,14 +75,13 @@ public class Shoot : MonoBehaviour
             {
                 if (mainEnemyBody.transform.parent == null)
                     break;
-                mainEnemyBody = mainEnemyBody.transform.parent.gameObject;
 
+                mainEnemyBody = mainEnemyBody.transform.parent.gameObject;
                 if (mainEnemyBody.transform.name == "EnemyPlayer" || mainEnemyBody.transform.name == "EnemyPlayer(Clone)")
                     checkGood = true;
             }
             if (checkGood)
             {
-                Debug.Log("HELP HELP IM DYING");
                 mainEnemyBody.transform.GetComponent<EnemyHealth>().TakeDamage(gunDamage, hit.normal, gunBulletSpeed, hit.transform.GetComponent<Rigidbody>());
             }
         }

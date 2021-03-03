@@ -39,6 +39,7 @@ public class EnemyHealth : MonoBehaviour
         EnableRagdoll();
         bodyPart.AddForce(-velocity.normalized * (gunSpeed / 2), ForceMode.Impulse);
         // send back info like if stats are involved
+        GetComponent<EnemyMovement>().enabled = false;
     }
 
     void EnableRagdoll()

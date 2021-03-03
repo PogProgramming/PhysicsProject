@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerAbilities : MonoBehaviour
 {
@@ -17,8 +18,12 @@ public class PlayerAbilities : MonoBehaviour
     public RectTransform jetpackFuelDisplay = null;
 
     bool administratorAbilities = true;
-    bool mosesAbility = true;
-    float mosesRadius = 7f;
+
+    bool mosesAbility = false;
+    public float mosesRadius = 7f;
+    public float mosesStrength = 5000f;
+    public Text mosesEnabledText;
+
 
     void Start()
     {
@@ -35,8 +40,8 @@ public class PlayerAbilities : MonoBehaviour
             {
                 if (currentJetpackFuel > 0f)
                 {
-                    playerRb.AddForce(Vector3.up * jetpackForce);
-                    currentJetpackFuel -= jetpackFuelConsumptionRate;
+                    playerRb.AddForce(Vector3.up * jetpackForce * Time.deltaTime);
+                    currentJetpackFuel -= jetpackFuelConsumptionRate * Time.deltaTime;
                 }
             }
             else
@@ -51,7 +56,7 @@ public class PlayerAbilities : MonoBehaviour
                 }
                 else if(currentJetpackFuel < 100f)
                 {
-                    currentJetpackFuel += jetpackFuelRecoveryRate;
+                    currentJetpackFuel += jetpackFuelRecoveryRate * Time.deltaTime;
                     if (currentJetpackFuel > 100f)
                         currentJetpackFuel = 100f;
                 }
@@ -73,6 +78,7 @@ public class PlayerAbilities : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.P))
             {
                 mosesAbility = !mosesAbility;
+                mosesEnabledText.enabled = mosesAbility;
             }
 
             if (mosesAbility)
@@ -81,7 +87,7 @@ public class PlayerAbilities : MonoBehaviour
                 if (Physics.SphereCast(transform.position, mosesRadius, transform.forward, out objHit, enemyLayer))
                 {
                     Rigidbody rb = objHit.transform.GetComponent<Rigidbody>();
-                    rb.AddForce(-objHit.normal * 500f);
+                    if(rb != null) rb.AddForce(-objHit.normal * mosesStrength);
                 }
             }
         }
