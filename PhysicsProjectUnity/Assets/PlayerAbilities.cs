@@ -24,12 +24,15 @@ public class PlayerAbilities : MonoBehaviour
     public float mosesStrength = 5000f;
     public Text mosesEnabledText;
 
+    EnemySpawner[] enemySpawners;
+
 
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
 
         currentJetpackFuel = maxJetpackFuel;
+        enemySpawners = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponentsInChildren<EnemySpawner>();
     }
 
     void Update()
@@ -70,9 +73,12 @@ public class PlayerAbilities : MonoBehaviour
 
         if (administratorAbilities)
         {
-            if(Input.GetKey(KeyCode.O))
+            if(Input.GetKeyDown(KeyCode.O))
             {
-                GameObject.Find("EventSystem").GetComponent<EnemySpawner>().SpawnEnemy();
+                foreach(EnemySpawner s in enemySpawners)
+                {
+                    s.SpawnEnemy();
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.P))

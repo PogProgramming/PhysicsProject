@@ -6,6 +6,10 @@ public class EnemyHealth : MonoBehaviour
 {
     public float health;
     public float maxHealth;
+    public bool dead { get; private set; }
+
+    private bool despawnEngage = false;
+    private float despawnTimer = 5f;
 
     void Start()
     {
@@ -29,17 +33,26 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
+    float timer = 0;
     void Update()
     {
-
+        if (despawnEngage)
+        {
+            timer += Time.deltaTime;
+            if(timer > despawnTimer)
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 
     void Death(Vector3 velocity, float gunSpeed, Rigidbody bodyPart)
     {
+        dead = true;
         EnableRagdoll();
         bodyPart.AddForce(-velocity.normalized * (gunSpeed / 2), ForceMode.Impulse);
         // send back info like if stats are involved
-        GetComponent<EnemyMovement>().enabled = false;
+        despawnEngage = true;
     }
 
     void EnableRagdoll()

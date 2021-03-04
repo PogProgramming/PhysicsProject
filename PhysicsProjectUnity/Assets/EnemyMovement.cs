@@ -15,14 +15,20 @@ public class EnemyMovement : MonoBehaviour
     public float walkSpeed = 20f;
     public float viewDistance = 10f;
 
+    EnemyHealth health;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        health = GetComponent<EnemyHealth>();
     }
 
     void Update()
     {
+        if (health.dead)
+            return; 
+
         locatedPlayer = false;
         Collider[] cols = Physics.OverlapSphere(transform.position, viewDistance, playerMask);
         foreach (Collider col in cols)
