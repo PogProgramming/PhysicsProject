@@ -1,0 +1,2 @@
+E:\Git\PHYSICSPROJECTFIXED\aieBootstrap-master\aieBootstrap-master\aieBootstrap-master\temp\Bootstrap\Win32\Debug\Bootstrap.lib
+E:\Git\PHYSICSPROJECTFIXED\aieBootstrap-master\aieBootstrap-master\aieBootstrap-master\temp\Bootstrap\Win32\Debug\Bootstrap.pdb

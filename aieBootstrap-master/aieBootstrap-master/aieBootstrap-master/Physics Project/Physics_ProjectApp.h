@@ -3,10 +3,9 @@
 #include "Application.h"
 #include "Renderer2D.h"
 #include "Sphere.h"
+#include "PhysicsScene.h"
 #include "Input.h"
 #include "Box.h"
-
-#include "PhysicsScene.h"
 #include "Game.h"
 
 class Physics_ProjectApp : public aie::Application {

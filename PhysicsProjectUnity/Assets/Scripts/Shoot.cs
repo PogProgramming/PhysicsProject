@@ -3,13 +3,20 @@ using UnityEngine.UI;
 
 public class Shoot : MonoBehaviour
 {
+    // Make guns into array corresponding to enum int
+    //public GameObject[] guns; // 0 pistol, 1 rocket, 2 laser
+
     public GameObject gun;
     Animator gunAnimator;
+
+    public GameObject rocketLauncher;
+    // Animator rocketAnimator;
 
     public Image normalCrosshair;
     public Image hitCrosshair;
 
     public GameObject bullet = null;
+    public GameObject rocket = null;
     public GameObject orientation = null;
     public GameObject gunEndPoint = null; // To help with rotation of bullet
 
@@ -17,16 +24,27 @@ public class Shoot : MonoBehaviour
     bool canShoot = true;
 
     public float gunDamage = 0;
-    public float gunBulletSpeed = 0;
+    public float gunBulletSpeed = 0; // this will be rocket force too
 
     public LayerMask enemyLayer;
 
     Camera cam = null;
 
+    public enum GunType
+    {
+        Pistol,
+        Rocket,
+        Laser
+    }
+
+    GunType gunType;
+
     void Start()
     {
         cam = Camera.main;
+
         gunAnimator = gun.GetComponent<Animator>();
+        gunType = GunType.Pistol; // default
     }
 
     // Update is called once per frame
@@ -50,7 +68,7 @@ public class Shoot : MonoBehaviour
         if (crosshairChange)
         {
             crosshairTimer += Time.deltaTime;
-            if(crosshairTimer > 0.1f)
+            if (crosshairTimer > 0.1f)
             {
                 crosshairTimer = 0;
                 crosshairChange = false;
@@ -59,17 +77,51 @@ public class Shoot : MonoBehaviour
         }
     }
 
+    //void SwitchGun(int gunIndex)
+    //{
+    //    switch (gunIndex)
+    //    {
+    //        case (int)GunType.Pistol:
+    //        {
+    //            gunType = GunType.Pistol;
+    //            gun.SetActive(true);
+
+
+    //            break;
+    //        }
+    //    }
+    //}
+
     void InputShoot()
     {
         if (canShoot)
         {
             canShoot = false;
             timer = 0;
-            RunGunShotAnimation();
-            ShootBullet();
+
+            switch (gunType)
+            {
+                case GunType.Pistol:
+                {
+                    ShootBullet();
+                    RunGunShotAnimation();
+                    break;
+                }
+
+                case GunType.Rocket:
+                {
+                    ShootRocket();
+                    break;
+                }
+            }
         }
     }
-    
+
+    void RunRocketShotAnimation()
+    {
+        // vv
+    }
+
     void RunGunShotAnimation()
     {
         gunAnimator.Play("anim_GunShot", 0, 0f);
@@ -118,6 +170,10 @@ public class Shoot : MonoBehaviour
                 mainEnemyBody.transform.GetComponent<EnemyHealth>().TakeDamage(gunDamage, hit.normal, gunBulletSpeed, hit.transform.GetComponent<Rigidbody>());
             }
         }
+    }
 
+    void ShootRocket()
+    {
+        GameObject rocketObj = Instantiate(rocket, gunEndPoint.transform.position, Quaternion.identity);
     }
 }

@@ -7,8 +7,6 @@
 #include "Box.h"
 #include "Spring.h"
 
-#include "Physics_ProjectApp.h"
-
 #include <iostream>
 
 Game::Game(PhysicsScene* a_physicsScene)
