@@ -18,9 +18,12 @@ public class SC_HeadBobber : MonoBehaviour
     {
         if (Mathf.Abs(controller.rb.velocity.x) > 0.1f || Mathf.Abs(controller.rb.velocity.z) > 0.1f)
         {
-            //Player is moving
-            timer += Time.deltaTime * walkingBobbingSpeed;
-            transform.localPosition = new Vector3(transform.localPosition.x, defaultPosY + Mathf.Sin(timer) * bobbingAmount, transform.localPosition.z);
+            if (controller.grounded) // Player is on the ground
+            {
+                //Player is moving
+                timer += Time.deltaTime * walkingBobbingSpeed;
+                transform.localPosition = new Vector3(transform.localPosition.x, defaultPosY + Mathf.Sin(timer) * bobbingAmount, transform.localPosition.z);
+            }
         }
         else
         {

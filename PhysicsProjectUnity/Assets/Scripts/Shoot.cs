@@ -1,12 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Shoot : MonoBehaviour
 {
     public GameObject gun;
     Animator gunAnimator;
+
+    public Image normalCrosshair;
+    public Image hitCrosshair;
 
     public GameObject bullet = null;
     public GameObject orientation = null;
@@ -30,6 +31,10 @@ public class Shoot : MonoBehaviour
 
     // Update is called once per frame
     float timer = 0;
+
+    bool crosshairChange = false;
+    float crosshairTimer = 0;
+    float crosshairTimeout = 0.1f;
     void Update()
     {
         if (Input.GetMouseButton(0))
@@ -40,6 +45,17 @@ public class Shoot : MonoBehaviour
         else
         {
             if (!canShoot) canShoot = true;
+        }
+
+        if (crosshairChange)
+        {
+            crosshairTimer += Time.deltaTime;
+            if(crosshairTimer > 0.1f)
+            {
+                crosshairTimer = 0;
+                crosshairChange = false;
+                CrosshairHit(false);
+            }
         }
     }
 
@@ -58,6 +74,22 @@ public class Shoot : MonoBehaviour
     {
         gunAnimator.Play("anim_GunShot", 0, 0f);
         //anim_GunShot
+    }
+
+    void CrosshairHit(bool _set)
+    {
+        if (_set)
+        {
+            normalCrosshair.enabled = false;
+            hitCrosshair.enabled = true;
+
+            crosshairChange = true;
+        }
+        else
+        {
+            normalCrosshair.enabled = true;
+            hitCrosshair.enabled = false;
+        }
     }
 
     void ShootBullet()
@@ -82,6 +114,7 @@ public class Shoot : MonoBehaviour
             }
             if (checkGood)
             {
+                CrosshairHit(true);
                 mainEnemyBody.transform.GetComponent<EnemyHealth>().TakeDamage(gunDamage, hit.normal, gunBulletSpeed, hit.transform.GetComponent<Rigidbody>());
             }
         }
