@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Shoot : MonoBehaviour
@@ -6,11 +7,10 @@ public class Shoot : MonoBehaviour
     // Make guns into array corresponding to enum int
     //public GameObject[] guns; // 0 pistol, 1 rocket, 2 laser
 
-    public GameObject gun;
-    Animator gunAnimator;
+    public List<GameObject> guns;
 
-    public GameObject rocketLauncher;
-    // Animator rocketAnimator;
+    Animator pistolAnimator;
+    Animator rocketAnimator;
 
     public Image normalCrosshair;
     public Image hitCrosshair;
@@ -21,10 +21,16 @@ public class Shoot : MonoBehaviour
     public GameObject gunEndPoint = null; // To help with rotation of bullet
 
     public float cooldown = 0.2f;
-    bool canShoot = true;
+
+    [SerializeField] bool canShoot = true;
 
     public float gunDamage = 0;
-    public float gunBulletSpeed = 0; // this will be rocket force too
+    public float gunBulletSpeed = 0;
+
+    // rocket will kill no matter what
+    public float rocketForce = 0;
+    public float rocketBlastRadius = 0;
+    public float blastForce = 0;
 
     public LayerMask enemyLayer;
 
@@ -33,8 +39,7 @@ public class Shoot : MonoBehaviour
     public enum GunType
     {
         Pistol,
-        Rocket,
-        Laser
+        Rocket
     }
 
     GunType gunType;
@@ -43,7 +48,7 @@ public class Shoot : MonoBehaviour
     {
         cam = Camera.main;
 
-        gunAnimator = gun.GetComponent<Animator>();
+        pistolAnimator = guns[(int)GunType.Pistol].GetComponent<Animator>();
         gunType = GunType.Pistol; // default
     }
 
@@ -75,22 +80,48 @@ public class Shoot : MonoBehaviour
                 CrosshairHit(false);
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if((int)gunType != 0)
+                SwitchGun(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            if ((int)gunType != 1)
+                SwitchGun(1);
+        }
     }
 
-    //void SwitchGun(int gunIndex)
-    //{
-    //    switch (gunIndex)
-    //    {
-    //        case (int)GunType.Pistol:
-    //        {
-    //            gunType = GunType.Pistol;
-    //            gun.SetActive(true);
+    void SwitchGun(int gunIndex)
+    {
+        switch (gunIndex)
+        {
+            case (int)GunType.Pistol:
+            {
+                guns[(int)gunType].SetActive(false);
+                guns[(int)GunType.Pistol].SetActive(true);
+
+                gunType = GunType.Pistol;
 
 
-    //            break;
-    //        }
-    //    }
-    //}
+                break;
+            }
+
+            case (int)GunType.Rocket:
+            {
+                guns[(int)gunType].SetActive(false);
+                guns[(int)GunType.Rocket].SetActive(true);
+
+                gunType = GunType.Rocket;
+                
+
+
+                break;
+            }
+        }
+    }
 
     void InputShoot()
     {
@@ -124,7 +155,7 @@ public class Shoot : MonoBehaviour
 
     void RunGunShotAnimation()
     {
-        gunAnimator.Play("anim_GunShot", 0, 0f);
+        pistolAnimator.Play("anim_GunShot", 0, 0f);
         //anim_GunShot
     }
 
@@ -155,13 +186,13 @@ public class Shoot : MonoBehaviour
         {
             GameObject mainEnemyBody = hit.transform.gameObject;
             bool checkGood = false;
-            while (mainEnemyBody.transform.name != "EnemyPlayer" || mainEnemyBody.transform.name != "EnemyPlayer(Clone)")
+            while (mainEnemyBody.transform.tag != "Enemy")
             {
                 if (mainEnemyBody.transform.parent == null)
                     break;
 
                 mainEnemyBody = mainEnemyBody.transform.parent.gameObject;
-                if (mainEnemyBody.transform.name == "EnemyPlayer" || mainEnemyBody.transform.name == "EnemyPlayer(Clone)")
+                if (mainEnemyBody.transform.tag == "Enemy")
                     checkGood = true;
             }
             if (checkGood)
@@ -174,6 +205,9 @@ public class Shoot : MonoBehaviour
 
     void ShootRocket()
     {
-        GameObject rocketObj = Instantiate(rocket, gunEndPoint.transform.position, Quaternion.identity);
+        GameObject rocketObj = Instantiate(rocket, gunEndPoint.transform.position, gunEndPoint.transform.rotation);
+        RocketAttack rkt = rocketObj.GetComponent<RocketAttack>();
+
+        rkt.SetRocket(cam.transform.forward, rocketForce, blastForce, rocketBlastRadius, enemyLayer);
     }
 }

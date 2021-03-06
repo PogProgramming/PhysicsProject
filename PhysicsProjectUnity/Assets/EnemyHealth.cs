@@ -15,6 +15,18 @@ public class EnemyHealth : MonoBehaviour
     {
 
     }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+
+        if (health < 0)
+        {
+            health = 0;
+            Death();
+        }
+    }
+
     public void TakeDamage(float damage, Vector3 velocity, float gunSpeed, Rigidbody bodyPart)
     {
         if (bodyPart.name == "Head")
@@ -33,17 +45,28 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
+
     float timer = 0;
     void Update()
     {
         if (despawnEngage)
         {
             timer += Time.deltaTime;
-            if(timer > despawnTimer)
+            if (timer > despawnTimer)
             {
                 Destroy(gameObject);
             }
         }
+    }
+
+    public void Death()
+    {
+        dead = true;
+        EnableRagdoll();
+        // send back info like if stats are involved
+        despawnEngage = true;
+
+        if (health != 0) health = 0;
     }
 
     void Death(Vector3 velocity, float gunSpeed, Rigidbody bodyPart)
