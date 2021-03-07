@@ -18351,9 +18351,9 @@ MonoBehaviour:
   canShoot: 1
   gunDamage: 50
   gunBulletSpeed: 150
-  rocketForce: 1000
+  rocketForce: 5
   rocketBlastRadius: 10
-  blastForce: 25
+  blastForce: 5000
   enemyLayer:
     serializedVersion: 2
     m_Bits: 2048
@@ -23105,7 +23105,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-37542
+  m_Name: pb_Mesh-1728
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -33965,7 +33965,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-37528
+  m_Name: pb_Mesh-1714
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -37766,6 +37766,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 4588777464406326079, guid: f4a5e26fe5fdfad4ea8ea503abcd8f2c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4588777464773967747, guid: f4a5e26fe5fdfad4ea8ea503abcd8f2c, type: 3}
       propertyPath: m_Layer
       value: 10
@@ -37806,5 +37810,6 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1205819332}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4588777464406326079, guid: f4a5e26fe5fdfad4ea8ea503abcd8f2c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f4a5e26fe5fdfad4ea8ea503abcd8f2c, type: 3}

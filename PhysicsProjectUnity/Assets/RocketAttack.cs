@@ -40,6 +40,13 @@ public class RocketAttack : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.tag == "Player") return;
+
         Collider[] cols = Physics.OverlapSphere(transform.position, hitRadius, enemyLayerMask);
         foreach (Collider col in cols)
         {
@@ -57,8 +64,7 @@ public class RocketAttack : MonoBehaviour
             if (checkGood)
             {
                 mainEnemyBody.transform.GetComponent<EnemyHealth>().Death();
-                mainEnemyBody.transform.GetChild(1).GetComponent<Rigidbody>().AddForce
-                    (col.bounds.ClosestPoint(mainEnemyBody.transform.position).normalized * blastForce, ForceMode.Impulse);
+                mainEnemyBody.transform.GetChild(1).GetComponent<Rigidbody>().AddExplosionForce(blastForce, transform.position, hitRadius);
 
             }
         }
