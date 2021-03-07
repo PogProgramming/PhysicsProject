@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -82,6 +83,7 @@ public class EnemyHealth : MonoBehaviour
     {
         GetComponent<CharacterController>().enabled = false;
         GetComponent<Animator>().enabled = false;
+        GetComponent<NavMeshAgent>().enabled = false;
     }
 
 }

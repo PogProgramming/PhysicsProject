@@ -159,7 +159,7 @@ public class Shoot : MonoBehaviour
         //anim_GunShot
     }
 
-    void CrosshairHit(bool _set)
+    public void CrosshairHit(bool _set)
     {
         if (_set)
         {
@@ -184,22 +184,28 @@ public class Shoot : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(gunEndPoint.transform.position, cam.transform.forward, out hit, enemyLayer))
         {
-            GameObject mainEnemyBody = hit.transform.gameObject;
-            bool checkGood = false;
-            while (mainEnemyBody.transform.tag != "Enemy")
-            {
-                if (mainEnemyBody.transform.parent == null)
-                    break;
-
-                mainEnemyBody = mainEnemyBody.transform.parent.gameObject;
-                if (mainEnemyBody.transform.tag == "Enemy")
-                    checkGood = true;
-            }
-            if (checkGood)
+            EnemyHealth hp = hit.transform.GetComponentInParent<EnemyHealth>();
+            if(hp != null)
             {
                 CrosshairHit(true);
-                mainEnemyBody.transform.GetComponent<EnemyHealth>().TakeDamage(gunDamage, hit.normal, gunBulletSpeed, hit.transform.GetComponent<Rigidbody>());
+                hp.TakeDamage(gunDamage, hit.normal, gunBulletSpeed, hit.transform.GetComponent<Rigidbody>());
             }
+
+            //bool checkGood = false;
+            //while (mainEnemyBody.transform.tag != "Enemy")
+            //{
+            //    if (mainEnemyBody.transform.parent == null)
+            //        break;
+
+            //    mainEnemyBody = mainEnemyBody.transform.parent.gameObject;
+            //    if (mainEnemyBody.transform.tag == "Enemy")
+            //        checkGood = true;
+            //}
+            //if (checkGood)
+            //{
+            //    CrosshairHit(true);
+            //    mainEnemyBody.transform.GetComponent<EnemyHealth>().TakeDamage(gunDamage, hit.normal, gunBulletSpeed, hit.transform.GetComponent<Rigidbody>());
+            //}
         }
     }
 
@@ -208,6 +214,6 @@ public class Shoot : MonoBehaviour
         GameObject rocketObj = Instantiate(rocket, gunEndPoint.transform.position, gunEndPoint.transform.rotation);
         RocketAttack rkt = rocketObj.GetComponent<RocketAttack>();
 
-        rkt.SetRocket(cam.transform.forward, rocketForce, blastForce, rocketBlastRadius, enemyLayer);
+        rkt.SetRocket(cam.transform.forward, rocketForce, blastForce, rocketBlastRadius, enemyLayer, this);
     }
 }

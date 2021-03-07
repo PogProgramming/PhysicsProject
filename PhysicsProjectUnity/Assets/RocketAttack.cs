@@ -13,6 +13,8 @@ public class RocketAttack : MonoBehaviour
 
     LayerMask enemyLayerMask;
 
+    Shoot gunScript = null;
+
     void Start()
     {
 
@@ -21,10 +23,12 @@ public class RocketAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.y < -100) Destroy(gameObject);
 
+        if(rb != null) transform.rotation = Quaternion.LookRotation(rb.velocity); // Fix its orientation
     }
 
-    public void SetRocket(Vector3 dir, float hitForce, float rbForce, float blastRadius, LayerMask enemyLayer)
+    public void SetRocket(Vector3 dir, float hitForce, float rbForce, float blastRadius, LayerMask enemyLayer, Shoot _gunScript)
     {
         rb = GetComponent<Rigidbody>();
 
@@ -36,11 +40,8 @@ public class RocketAttack : MonoBehaviour
         enemyLayerMask = enemyLayer;
 
         rb.AddForce(dir * rocketForce, ForceMode.Impulse);
-    }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-
+        gunScript = _gunScript;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -65,7 +66,7 @@ public class RocketAttack : MonoBehaviour
             {
                 mainEnemyBody.transform.GetComponent<EnemyHealth>().Death();
                 mainEnemyBody.transform.GetChild(1).GetComponent<Rigidbody>().AddExplosionForce(blastForce, transform.position, hitRadius);
-
+                gunScript.CrosshairHit(true);
             }
         }
 
