@@ -10,7 +10,7 @@ public class EnemyHealth : MonoBehaviour
     public bool dead { get; private set; }
 
     private bool despawnEngage = false;
-    private float despawnTimer = 5f;
+    private float despawnTimer = 2f;
 
     public void TakeDamage(float damage)
     {
@@ -39,6 +39,11 @@ public class EnemyHealth : MonoBehaviour
             health = 0;
             Death(velocity, gunSpeed, bodyPart);
         }
+
+        if(transform.tag == "Invincible")
+        {
+            GetComponent<Rigidbody>().AddForce(-velocity.normalized * (gunSpeed / 3), ForceMode.Impulse);
+        }
     }
 
 
@@ -51,18 +56,27 @@ public class EnemyHealth : MonoBehaviour
             if (timer > despawnTimer)
             {
                 Destroy(gameObject);
+                GameObject.Find("EventSystem").GetComponent<GameSystem>().AdjustKills(1);
             }
         }
     }
 
     public void Death()
     {
-        dead = true;
-        EnableRagdoll();
-        // send back info like if stats are involved
-        despawnEngage = true;
+        if(transform.tag == "Invincible")
+        {
+            health = maxHealth;
+        }
+        else
+        {
+            dead = true;
+            EnableRagdoll();
+            // send back info like if stats are involved
+            despawnEngage = true;
 
-        if (health != 0) health = 0;
+            if (health != 0) health = 0;
+
+        }
     }
 
     void Death(Vector3 velocity, float gunSpeed, Rigidbody bodyPart)
@@ -72,6 +86,7 @@ public class EnemyHealth : MonoBehaviour
         //bodyPart.AddForce(-velocity.normalized * (gunSpeed / 2), ForceMode.Impulse);
         // send back info like if stats are involved
         despawnEngage = true;
+
     }
 
     void EnableRagdoll()
