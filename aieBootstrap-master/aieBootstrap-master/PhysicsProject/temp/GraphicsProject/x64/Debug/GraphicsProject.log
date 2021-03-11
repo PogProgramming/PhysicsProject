@@ -1,3 +1,5 @@
 ﻿  GraphicsProjectApp.cpp
-C:\Users\s200500\Desktop\yes\aieBootstrap-master\aieBootstrap-master\PhysicsProject\GraphicsProject\GraphicsProjectApp.cpp(91,74): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\s200500\Desktop\yes\aieBootstrap-master\aieBootstrap-master\PhysicsProject\GraphicsProject\GraphicsProjectApp.cpp(108,90): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  main.cpp
+  Generating Code...
   GraphicsProject.vcxproj -> C:\Users\s200500\Desktop\yes\aieBootstrap-master\aieBootstrap-master\PhysicsProject\temp\GraphicsProject\x64\Debug\GraphicsProject.exe

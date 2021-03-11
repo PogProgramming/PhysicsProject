@@ -7,6 +7,7 @@
 #include "OBJMesh.h"
 #include "Input.h"
 #include "Camera.h"
+#include <vector>
 
 class GraphicsProjectApp : public aie::Application {
 public:
@@ -21,7 +22,9 @@ public:
 	virtual void draw();
 
 protected:
-	Camera m_camera;
+	int currentCamera = 0;
+	const int maxCameras = 1;
+	std::vector<Camera> m_cameras;
 
 	// camera transforms
 	glm::mat4	m_viewMatrix;

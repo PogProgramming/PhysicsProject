@@ -33,6 +33,12 @@ bool GraphicsProjectApp::startup() {
 	m_light.color = { 1, 1, 1 };
 	m_ambientLight = { 0.25f, 0.25f, 0.25f };
 
+	Camera cam1;
+	m_cameras.push_back(cam1);
+
+	Camera cam2;
+	m_cameras.push_back(cam2);
+
 	return LoadShaderAndMeshLogic();
 }
 
@@ -63,13 +69,24 @@ void GraphicsProjectApp::update(float deltaTime) {
 	// add a transform so we can see the axis
 	Gizmos::addTransform(mat4(1));
 
-	m_camera.Update(deltaTime);
+	m_cameras[currentCamera].Update(deltaTime);
 
 	float time = getTime();
 	m_light.direction = glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0));
 
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
+
+	if (input->wasKeyPressed(aie::INPUT_KEY_UP)) {
+		if(currentCamera < maxCameras)
+			currentCamera++;
+	}
+
+	if (input->wasKeyPressed(aie::INPUT_KEY_DOWN)) {
+		if (currentCamera > 0)
+			currentCamera--;
+	}
+
 
 	//m_bunnyTransform = glm::rotate(m_bunnyTransform, m_bunnyYRotation, glm::vec3(0, 1, 0));
 	//m_dragonTransform = glm::rotate(m_dragonTransform, m_dragonYRotation, glm::vec3(0, 1, 0));
@@ -88,8 +105,8 @@ void GraphicsProjectApp::draw() {
 	clearScreen();
 
 	// update perspective based on screen size
-	glm::mat4 projectionMatrix = m_camera.GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
-	glm::mat4 viewMatrix = m_camera.GetViewMatrix();
+	glm::mat4 projectionMatrix = m_cameras[currentCamera].GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
+	glm::mat4 viewMatrix = m_cameras[currentCamera].GetViewMatrix();
 
 
 	DrawShaderAndMeshes(projectionMatrix, viewMatrix);
