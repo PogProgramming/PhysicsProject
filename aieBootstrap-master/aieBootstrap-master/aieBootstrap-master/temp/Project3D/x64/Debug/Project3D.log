@@ -1,4 +1,0 @@
-﻿  Application3D.cpp
-  main.cpp
-  Generating Code...
-LINK : fatal error LNK1104: cannot open file 'bootstrap.lib'

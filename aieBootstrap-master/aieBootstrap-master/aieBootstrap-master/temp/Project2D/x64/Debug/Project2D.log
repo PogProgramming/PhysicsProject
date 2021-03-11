@@ -1,5 +1,0 @@
-﻿  Application2D.cpp
-E:\Git\PHYSICSPROJECTFIXED\aieBootstrap-master\aieBootstrap-master\aieBootstrap-master\Project2D\Application2D.cpp(82,46): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  main.cpp
-  Generating Code...
-LINK : fatal error LNK1104: cannot open file 'bootstrap.lib'
