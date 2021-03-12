@@ -1,0 +1,13 @@
+#
+#
+#
+# Blender MTL File: 'cup.blend'
+newmtl Material_untitled
+illum 2
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
+Ns 20.000000
+map_Kd diffuse.png
+map_Ks spec.png
+map_Bump normal.png

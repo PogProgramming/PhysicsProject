@@ -1,1 +1,5 @@
-﻿LINK : fatal error LNK1181: cannot open input file 'bootstrap.lib'
+﻿  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 2689 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  GraphicsProject.vcxproj -> C:\Users\s200500\Desktop\yes\aieBootstrap-master\aieBootstrap-master\PhysicsProject\temp\GraphicsProject\x64\Release\GraphicsProject.exe

@@ -22,22 +22,30 @@ void Camera::Update(float deltaTime)
 
 #pragma region InputMovement
 	if (input->isKeyDown(aie::INPUT_KEY_X)) {
-		m_position += up * deltaTime;
+		m_position += up * deltaTime * moveSpeed;
 	}
 	if (input->isKeyDown(aie::INPUT_KEY_Z)) {
-		m_position -= up * deltaTime;
+		m_position -= up * deltaTime * moveSpeed;
 	}
 	if (input->isKeyDown(aie::INPUT_KEY_A)) {
-		m_position -= right * deltaTime;
+		m_position -= right * deltaTime * moveSpeed;
 	}
 	if (input->isKeyDown(aie::INPUT_KEY_D)) {
-		m_position += right * deltaTime;
+		m_position += right * deltaTime * moveSpeed;
 	}
 	if (input->isKeyDown(aie::INPUT_KEY_W)) {
-		m_position += forward * deltaTime;
+		m_position += forward * deltaTime * moveSpeed;
 	}
 	if (input->isKeyDown(aie::INPUT_KEY_S)) {
-		m_position -= forward * deltaTime;
+		m_position -= forward * deltaTime * moveSpeed;
+	}
+	if (input->isKeyDown(aie::INPUT_KEY_LEFT_SHIFT)) {
+		shifting = true;
+		moveSpeed = 6.0f;
+	}
+	if (input->isKeyUp(aie::INPUT_KEY_LEFT_SHIFT) && shifting) {
+		moveSpeed = 1.0f;
+		shifting = false;
 	}
 #pragma endregion
 

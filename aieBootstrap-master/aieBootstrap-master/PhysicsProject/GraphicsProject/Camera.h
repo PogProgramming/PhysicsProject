@@ -5,6 +5,7 @@ class Camera
 {
 public:
 	Camera();
+	Camera(glm::vec3 pos) { m_position = pos; }
 	~Camera() {}
 
 	void Update(float deltaTime);
@@ -20,5 +21,8 @@ private:
 	glm::vec3 m_position;
 
 	float m_lastMouseX, m_lastMouseY;
+
+	bool shifting = false;
+	float moveSpeed = 1.0f;
 };
 

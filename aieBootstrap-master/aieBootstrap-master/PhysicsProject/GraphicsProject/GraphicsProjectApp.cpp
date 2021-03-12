@@ -33,11 +33,7 @@ bool GraphicsProjectApp::startup() {
 	m_light.color = { 1, 1, 1 };
 	m_ambientLight = { 0.25f, 0.25f, 0.25f };
 
-	Camera cam1;
-	m_cameras.push_back(cam1);
-
-	Camera cam2;
-	m_cameras.push_back(cam2);
+	m_cameras.push_back(Camera());
 
 	return LoadShaderAndMeshLogic();
 }
@@ -78,7 +74,7 @@ void GraphicsProjectApp::update(float deltaTime) {
 	aie::Input* input = aie::Input::getInstance();
 
 	if (input->wasKeyPressed(aie::INPUT_KEY_UP)) {
-		if(currentCamera < maxCameras)
+		if(currentCamera < m_cameras.size() - 1)
 			currentCamera++;
 	}
 
@@ -86,7 +82,6 @@ void GraphicsProjectApp::update(float deltaTime) {
 		if (currentCamera > 0)
 			currentCamera--;
 	}
-
 
 	//m_bunnyTransform = glm::rotate(m_bunnyTransform, m_bunnyYRotation, glm::vec3(0, 1, 0));
 	//m_dragonTransform = glm::rotate(m_dragonTransform, m_dragonYRotation, glm::vec3(0, 1, 0));
@@ -116,36 +111,7 @@ void GraphicsProjectApp::draw() {
 
 bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 {
-#pragma region Quad
-	m_simpleShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
 
-	// Load the fragment shader from a file
-	m_simpleShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/simple.frag");
-	if (!m_simpleShader.link()) {
-		printf("Simple shader had an error: %s\n", m_simpleShader.getLastError());
-		return false;
-	}
-
-	Mesh::Vertex vertices[4];
-	vertices[0].position = { -0.5, 0.f, 0.5f, 1.f };
-	vertices[1].position = { 0.5, 0.f, 0.5f, 1.f };
-	vertices[2].position = { -0.5, 0.f, -0.5f, 1.f };
-	vertices[3].position = { 0.5, 0.f, -0.5f, 1.f };
-
-	unsigned int indices[6] = { 0, 1, 2, 2, 1, 3 };
-
-	m_quadMesh.Initialise(4, vertices, 6, indices);
-
-	// We will make the quad 10 units by 10 units
-	m_quadTransform = {
-		10, 0, 0, 0,
-		0, 10, 0, 0,
-		0, 0, 10, 0,
-		0, 0, 0, 1
-	};
-
-	m_quadTransform = glm::rotate(m_quadTransform, angle, glm::vec3(1));
-#pragma endregion
 
 #pragma region FlatBunny
 	m_bunnyShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
@@ -171,8 +137,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 
 	m_bunnyTransform = glm::translate(m_bunnyTransform, glm::vec3(1, 0, 1) * 20.0f);
 #pragma endregion
-
-#pragma region Phong
+#pragma region Phong Shader
 	m_phongShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
 	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
 	if (m_phongShader.link() == false) {
@@ -181,6 +146,76 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 	}
 
 #pragma endregion
+
+#pragma region Texture Shader
+	m_textureShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/textured.vert");
+	m_textureShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/textured.frag");
+	if (m_textureShader.link() == false) {
+		printf("Textured Shader had an error: %s\n", m_textureShader.getLastError());
+		return false;
+	}
+#pragma endregion
+
+#pragma region NormalMapTexture Shader
+	m_normalMapShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/normalMap.vert");
+	m_normalMapShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/normalMap.frag");
+	if (m_normalMapShader.link() == false) {
+		printf("NormalMapTexture Shader had an error: %s\n", m_normalMapShader.getLastError());
+		return false;
+	}
+
+#pragma endregion
+#pragma region Quad
+	m_simpleShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
+
+	// Load the fragment shader from a file
+	m_simpleShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/simple.frag");
+	if (!m_simpleShader.link()) {
+		printf("Simple shader had an error: %s\n", m_simpleShader.getLastError());
+		return false;
+	}
+
+	Mesh::Vertex vertices[4];
+	vertices[0].position = { -0.5, 0.f, 0.5f, 1.f };
+	vertices[1].position = { 0.5, 0.f, 0.5f, 1.f };
+	vertices[2].position = { -0.5, 0.f, -0.5f, 1.f };
+	vertices[3].position = { 0.5, 0.f, -0.5f, 1.f };
+
+	unsigned int indices[6] = { 0, 1, 2, 2, 1, 3 };
+
+	m_quadMesh.InitialiseQuad();
+
+	// We will make the quad 10 units by 10 units
+	m_quadTransform = {
+		10, 0, 0, 0,
+		0, 10, 0, 0,
+		0, 0, 10, 0,
+		0, 0, 0, 1
+	};
+
+	m_quadTransform = glm::rotate(m_quadTransform, angle, glm::vec3(1));
+#pragma endregion
+#pragma region GridLogic
+	if (m_gridTexture.load("./textures/numbered_grid.tga") == false) {
+		printf("Failed to load: numbered_grid.tga\n");
+		return false;
+	}
+#pragma endregion
+
+//#pragma region SpearLogic
+//	if (m_spearTexture.load("./stanford/soulspear_normal.tga") == false) {
+//		printf("Failed to load: soulspear_normal.tga\n");
+//		return false;
+//	}
+//#pragma endregion
+//
+//
+//#pragma region ManLogic
+//	if (m_manTexture.load("./stanford/ironman/M-COC_iOS_HERO_Tony_Stark_Iron_Man_Mark_VII_Body_N.tga") == false) {
+//		printf("Failed to load: man_normal.png\n");
+//		return false;
+//	}
+//#pragma endregion
 
 #pragma region Dragon
 	if (m_dragonMesh.load("./stanford/dragon.obj") == false) {
@@ -234,7 +269,40 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 
 #pragma endregion
 
+#pragma region Spear
+	if (m_spearMesh.load("./stanford/soulspear.obj", true, true) == false) {
+		printf("Spear mesh failed!\n");
+		return false;
+	}
+
+	m_spearTransform = {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	};
+
+	m_spearTransform = glm::translate(m_spearTransform, glm::vec3(-1, 0, 1) * 5.0f);
+#pragma endregion
+
+#pragma region Man
+	if (m_manMesh.load("./stanford/ironman/gascanis.obj", true, true) == false) {
+		printf("Cuppah mesh failed!\n");
+		return false;
+	}
+
+	m_manTransform = {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	};
+
+	//m_manTransform = glm::translate(m_manTransform, glm::vec3(-1, 0, 1) * 20.0f);
+#pragma endregion
+
 	return true;
+
 }
 
 void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::mat4 a_viewMatrix)
@@ -243,11 +311,17 @@ void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::
 
 #pragma region Quad
 	// Bind the shader
-	m_simpleShader.bind();
+	m_textureShader.bind();
 
 	// Bind the transform of the mesh
 	pvm = a_projectionMatrix * a_viewMatrix * m_quadTransform; // PVM PROJECTION VIEW MATRIX
-	m_simpleShader.bindUniform("ProjectionViewModel", pvm);
+	m_textureShader.bindUniform("ProjectionViewModel", pvm);
+
+	// Bind the texture to a location of your choice (0)
+	m_textureShader.bindUniform("diffuseTexture", 0);
+
+	// Bind the texture to the specificed location
+	m_gridTexture.bind(0);
 
 	m_quadMesh.Draw();
 #pragma endregion
@@ -285,6 +359,7 @@ void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::
 
 #pragma endregion
 
+
 #pragma region Dragon
 	// Bind the PVM
 	pvm = a_projectionMatrix * a_viewMatrix * m_dragonTransform;
@@ -317,6 +392,44 @@ void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::
 
 	m_buddhaMesh.draw();
 #pragma endregion
+
+#pragma region Spear
+	m_normalMapShader.bind();
+	// Bind the PVM
+	pvm = a_projectionMatrix * a_viewMatrix * m_spearTransform;
+	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
+	m_normalMapShader.bindUniform("CameraPosition", m_cameras[currentCamera].GetPosition());
+	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
+	m_normalMapShader.bindUniform("LightColor", m_light.color);
+	m_normalMapShader.bindUniform("LightingDirection", m_light.direction);
+
+	// Bind the texture to a location of your choice (0)
+	m_normalMapShader.bindUniform("ModelMatrix", m_spearTransform);
+
+	//// Bind the texture to the specificed location
+	//m_spearTexture.bind(0);
+
+	m_spearMesh.draw();
+#pragma endregion
+
+#pragma region Man
+	m_normalMapShader.bind();
+	// Bind the PVM
+	pvm = a_projectionMatrix * a_viewMatrix * m_manTransform;
+	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
+	m_normalMapShader.bindUniform("CameraPosition", m_cameras[currentCamera].GetPosition());
+	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
+	m_normalMapShader.bindUniform("LightColor", m_light.color);
+	m_normalMapShader.bindUniform("LightingDirection", m_light.direction);
+
+	// Bind the texture to a location of your choice (0)
+	m_normalMapShader.bindUniform("ModelMatrix", m_manTransform);
+
+	//// Bind the texture to the specificed location
+	//m_spearTexture.bind(0);
+
+	m_manMesh.draw();
+#pragma endregion
 }
 
 void GraphicsProjectApp::IMGUI_Logic()
@@ -328,22 +441,32 @@ void GraphicsProjectApp::IMGUI_Logic()
 
 	ImGui::Begin("Dragon Transform");
 	ImGui::DragFloat3("Position", &m_dragonTransform[3][0], 0.1f, -40.0f, 40.0f);
-	ImGui::DragFloat("Y Rotation", &m_dragonYRotation, 0.1f, -360.0f, 360.0f);
+
 	ImGui::End();
 
 	ImGui::Begin("Bunny Transform");
 	ImGui::DragFloat3("Position", &m_bunnyTransform[3][0], 0.1f, -40.0f, 40.0f);
-	ImGui::DragFloat("Y Rotation", &m_bunnyYRotation, 0.1f, -360.0f, 360.0f);
+
 	ImGui::End();
 
 	ImGui::Begin("Lucy Transform");
 	ImGui::DragFloat3("Position", &m_lucyTransform[3][0], 0.1f, -40.0f, 40.0f);
-	ImGui::DragFloat("Y Rotation", &m_lucyYRotation, 0.1f, -360.0f, 360.0f);
+
 	ImGui::End();
 
 	ImGui::Begin("Buddha Transform");
 	ImGui::DragFloat3("Position", &m_buddhaTransform[3][0], 0.1f, -40.0f, 40.0f);
-	ImGui::DragFloat("Y Rotation", &m_buddhaYRotation, 0.1f, -360.0f, 360.0f);
+
+	ImGui::End();
+
+	ImGui::Begin("Spear Transform");
+	ImGui::DragFloat3("Position", &m_spearTransform[3][0], 0.1f, -40.0f, 40.0f);
+
+	ImGui::End();
+
+	ImGui::Begin("Man Transform");
+	ImGui::DragFloat3("Position", &m_manTransform[3][0], 0.1f, -40.0f, 40.0f);
+
 	ImGui::End();
 }
 

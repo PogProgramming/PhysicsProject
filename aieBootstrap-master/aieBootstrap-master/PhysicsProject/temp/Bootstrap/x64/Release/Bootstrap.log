@@ -1,11 +1,5 @@
-﻿  imgui.cpp
-  imgui_draw.cpp
-  Application.cpp
-  Font.cpp
-  Gizmos.cpp
-  imgui_glfw3.cpp
+﻿  Application.cpp
   Input.cpp
   Renderer2D.cpp
-  Texture.cpp
-  gl_core_4_4.c
+  imgui_glfw3.cpp
   Bootstrap.vcxproj -> C:\Users\s200500\Desktop\yes\aieBootstrap-master\aieBootstrap-master\PhysicsProject\temp\Bootstrap\x64\Release\Bootstrap.lib

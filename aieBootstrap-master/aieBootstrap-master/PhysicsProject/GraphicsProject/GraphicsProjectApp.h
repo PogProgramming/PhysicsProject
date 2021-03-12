@@ -23,40 +23,43 @@ public:
 
 protected:
 	int currentCamera = 0;
-	const int maxCameras = 1;
 	std::vector<Camera> m_cameras;
 
 	// camera transforms
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
 
+	aie::Texture m_gridTexture;
+
 	// === SHADER =======
 	aie::ShaderProgram m_simpleShader;
 	aie::ShaderProgram m_bunnyShader;
 	aie::ShaderProgram m_phongShader;
+	aie::ShaderProgram m_textureShader;
+	aie::ShaderProgram m_normalMapShader;
 	// ==================
 	// Basic Plane
 	Mesh m_quadMesh;
 	glm::mat4 m_quadTransform;
 	aie::OBJMesh m_bunnyMesh;
 	glm::mat4 m_bunnyTransform;
-	float m_bunnyYRotation = 0.0f;
-	glm::vec3 m_bunnyPosition = { 0, 0, 0 };
 
 	aie::OBJMesh m_dragonMesh;
 	glm::mat4 m_dragonTransform;
-	float m_dragonYRotation = 0.0f;
-	glm::vec3 m_dragonPosition = { 0, 0, 0 };
 
 	aie::OBJMesh m_lucyMesh;
 	glm::mat4 m_lucyTransform;
-	float m_lucyYRotation = 0.0f;
-	glm::vec3 m_lucyPosition = { 0, 0, 0 };
 
 	aie::OBJMesh m_buddhaMesh;
 	glm::mat4 m_buddhaTransform;
-	float m_buddhaYRotation = 0.0f;
-	glm::vec3 m_buddhaPosition = { 0, 0, 0 };
+
+	aie::OBJMesh m_spearMesh;
+	glm::mat4 m_spearTransform;
+	aie::Texture m_spearTexture;
+
+	aie::OBJMesh m_manMesh;
+	glm::mat4 m_manTransform;
+	aie::Texture m_manTexture;
 
 	struct Light {
 		glm::vec3 direction;
