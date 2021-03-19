@@ -2,9 +2,9 @@
 #include <glm/ext.hpp>
 #include <Input.h>
 
-Camera::Camera()
+Camera::Camera(glm::vec3 a_camPos)
 {
-	m_position = glm::vec3(0);
+	m_position = a_camPos;
 	m_phi = 0;
 	m_theta = 0;
 }

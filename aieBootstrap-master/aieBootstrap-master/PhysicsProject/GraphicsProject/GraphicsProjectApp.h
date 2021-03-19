@@ -8,6 +8,7 @@
 #include "Input.h"
 #include "Camera.h"
 #include <vector>
+#include "Scene.h"
 
 class GraphicsProjectApp : public aie::Application {
 public:
@@ -22,8 +23,7 @@ public:
 	virtual void draw();
 
 protected:
-	int currentCamera = 0;
-	std::vector<Camera> m_cameras;
+	std::vector<Camera*> m_cameras;
 
 	// camera transforms
 	glm::mat4	m_viewMatrix;
@@ -41,40 +41,40 @@ protected:
 	// Basic Plane
 	Mesh m_quadMesh;
 	glm::mat4 m_quadTransform;
+
 	aie::OBJMesh m_bunnyMesh;
-	glm::mat4 m_bunnyTransform;
 
 	aie::OBJMesh m_dragonMesh;
-	glm::mat4 m_dragonTransform;
 
 	aie::OBJMesh m_lucyMesh;
-	glm::mat4 m_lucyTransform;
 
 	aie::OBJMesh m_buddhaMesh;
-	glm::mat4 m_buddhaTransform;
 
 	aie::OBJMesh m_spearMesh;
-	glm::mat4 m_spearTransform;
-	aie::Texture m_spearTexture;
 
-	aie::OBJMesh m_manMesh;
-	glm::mat4 m_manTransform;
-	aie::Texture m_manTexture;
+	aie::OBJMesh m_canMesh;
 
-	struct Light {
-		glm::vec3 direction;
-		glm::vec3 color;
-	};
+	//struct Light {
+	//	glm::vec3 direction;
+	//	glm::vec3 color;
+	//};
 
-	Light m_light;
+	//Light m_dynamicLight;
+
+	float m_directionalRotSpeed = 2;
+	float m_directionalOrbitRadius = 1;
+	glm::vec3 m_directionalLightPos = glm::vec3(0);
+
+	glm::vec3 m_camPosition = glm::vec3(15);
+
+	Scene* m_scene;
+
 	glm::vec3 m_ambientLight;
 
 public:
-	bool LoadShaderAndMeshLogic();
-	void DrawShaderAndMeshes(glm::mat4, glm::mat4);
+	bool LoadShaderAndMeshLogic(Light a_light);
+	//void DrawShaderAndMeshes(glm::mat4, glm::mat4);
 	void IMGUI_Logic();
-
-	float Rotation(glm::mat4 &mat, float rot, glm::vec3 axis);
 
 protected:
 	float m_camMovementSpeed = 10.0f;
