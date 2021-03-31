@@ -46,7 +46,11 @@ void Instance::Draw(Scene* a_scene)
 
 	// Draw the mesh
 	m_mesh->draw();
+
+	RecalculateTransform();
 }
+
+
 
 glm::mat4 Instance::MakeTransform(glm::vec3 a_position, glm::vec3 a_eulerAngles, glm::vec3 a_scale)
 {

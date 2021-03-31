@@ -1,8 +1,8 @@
 ﻿  GraphicsProjectApp.cpp
 C:\Users\s200500\Desktop\yes\aieBootstrap-master\aieBootstrap-master\PhysicsProject\GraphicsProject\GraphicsProjectApp.cpp(107,91): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
   Generating code
-  1 of 2794 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+  3 of 2796 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    21 functions had inline decision re-evaluated but remain unchanged
+    23 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   GraphicsProject.vcxproj -> C:\Users\s200500\Desktop\yes\aieBootstrap-master\aieBootstrap-master\PhysicsProject\temp\GraphicsProject\x64\Release\GraphicsProject.exe

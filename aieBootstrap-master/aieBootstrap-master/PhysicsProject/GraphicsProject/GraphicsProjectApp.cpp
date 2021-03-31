@@ -234,8 +234,8 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 	m_scene->AddInstance(new Instance(glm::vec3(0, 0, 0), glm::vec3(0, 30, 0), glm::vec3(1), &m_spearMesh, &m_normalMapShader));
 
 	// Add lights
-	m_scene->GetPointLights().push_back(Light(vec3(5, 3, 0), vec3(1, 0, 0), 50));
-	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(0, 1, 0), 50));
+	m_scene->GetPointLights().push_back(Light(vec3(5, 3, 0), vec3(1, 0, 1), 50));
+	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(1, 0.5f, 0), 50));
 
 
 #pragma endregion
@@ -252,16 +252,22 @@ void GraphicsProjectApp::IMGUI_Logic()
 	ImGui::DragFloat3("Light Position", &m_directionalLightPos[0], 0.1f, -50.0f, 50.0f);
 	ImGui::End();
 
-	ImGui::Begin("Man Transform");
-	ImGui::DragFloat3("Position", &m_scene->GetInstances()[0]->m_transform[3][0], 0.1f, -40.0f, 40.0f);
+	ImGui::Begin("GasCan Transform");
+	ImGui::DragFloat3("Position", &m_scene->GetInstances()[0]->m_pos[0], 0.1f, -40.0f, 40.0f);
+	ImGui::DragFloat3("Rotation", &m_scene->GetInstances()[0]->m_rot[0], 0.1f, -360.0f, 360.0f);
+	ImGui::DragFloat3("Scale", &m_scene->GetInstances()[0]->m_scale[0], 0.1f, 0.001f, 10.0f);
 	ImGui::End();
 
 	ImGui::Begin("Dragon Transform");
-	ImGui::DragFloat3("Position", &m_scene->GetInstances()[1]->m_transform[3][0], 0.1f, -40.0f, 40.0f);
+	ImGui::DragFloat3("Position", &m_scene->GetInstances()[1]->m_pos[0], 0.1f, -40.0f, 40.0f);
+	ImGui::DragFloat3("Rotation", &m_scene->GetInstances()[1]->m_rot[0], 0.1f, -360.0f, 360.0f);
+	ImGui::DragFloat3("Scale", &m_scene->GetInstances()[1]->m_scale[0], 0.1f, 0.001f, 10.0f);
 	ImGui::End();
 
 	ImGui::Begin("Spear Transform");
-	ImGui::DragFloat3("Position", &m_scene->GetInstances()[2]->m_transform[3][0], 0.1f, -40.0f, 40.0f);
+	ImGui::DragFloat3("Position", &m_scene->GetInstances()[2]->m_pos[0], 0.1f, -40.0f, 40.0f);
+	ImGui::DragFloat3("Rotation", &m_scene->GetInstances()[2]->m_rot[0], 0.1f, -360.0f, 360.0f);
+	ImGui::DragFloat3("Scale", &m_scene->GetInstances()[2]->m_scale[0], 0.1f, 0.001f, 10.0f);
 	ImGui::End();
 
 	//ImGui::Begin("Green Light");
